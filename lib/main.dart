@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-//import './Welcome/welcome.dart';
-//import './Welcome/home.dart';
-//import './Welcome/appbar.dart';
-//import './Welcome/make_it_rain.dart';
-//import './Welcome/gesture.dart';
 import './interfaces/loginapp.dart';
-//import './interfaces/signup.dart';
 
 void main() {
   runApp(new MaterialApp(
