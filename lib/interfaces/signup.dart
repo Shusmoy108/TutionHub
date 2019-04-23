@@ -144,7 +144,7 @@ class _SignUpState extends State<SignUpPage> {
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: new AppBar(
-        title: new Text("Sign Up"),
+        title: new Text("Tuition Hub"),
       ),
       body: new Container(
         margin: EdgeInsets.all(20),

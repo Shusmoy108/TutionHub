@@ -80,7 +80,7 @@ class _AddTutionPageState extends State<AddTutionPage> {
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: new AppBar(
-        title: new Text("Tutions"),
+        title: new Text("Tuition Hub"),
       ),
       body: new Container(
         margin: EdgeInsets.all(20),

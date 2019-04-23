@@ -4,7 +4,7 @@ import './interfaces/loginapp.dart';
 void main() {
   runApp(new MaterialApp(
     color: Colors.greenAccent,
-    title: 'TutionHub ',
+    title: 'TuitionHub ',
     home: new LogIn(),
     //title: 'Layouts',
     //home: new Gesture(title: 'Gesture',),
