@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import './signup.dart';
-import 'tutionpage.dart';
+
+import 'tution.dart';
 import 'user.dart';
+import 'alltutionspage.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class LogIn extends StatefulWidget {
@@ -18,6 +20,9 @@ class LogInState extends State<LogIn> {
   DatabaseReference databaseReference;
   String _email, _password, _error = "";
   List<User> _users = [];
+  List<Tution> tutions = List();
+  List<Tution> mytutions = List();
+
   @override
   void initState() {
     setState(() {
@@ -36,11 +41,6 @@ class LogInState extends State<LogIn> {
       appBar: new AppBar(
         title: new Text("Tuition Hub"),
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[],
-        ),
-      ),
       body: new Container(
         margin: EdgeInsets.all(20),
         child: Form(
@@ -57,7 +57,7 @@ class LogInState extends State<LogIn> {
                 children: <Widget>[
                   loginButton(),
                   Padding(
-                    padding: EdgeInsets.only(left: 185),
+                    padding: EdgeInsets.only(left: 50),
                   ),
                   signupButton()
                 ],
@@ -144,8 +144,50 @@ class LogInState extends State<LogIn> {
           setState(() {
             _error = "";
           });
+          print("object");
+          print(value["area"]);
+          User u;
+          u = User(
+              value["username"],
+              value["gender"],
+              value["address"],
+              value["area"],
+              value["department"],
+              value["institution"],
+              value["mobile"],
+              value["password"],
+              value["email"]);
+          print(u);
+          for (var key in onValue.value.keys) {
+            u.uid = key;
+          }
+          databaseReference.once().then((DataSnapshot snapshot) {
+            for (var value in snapshot.value.values) {
+              Tution tution = Tution(
+                  value['cls'],
+                  value["subject"],
+                  value["salary"],
+                  value["address"],
+                  value["area"],
+                  value["institution"],
+                  value["numberofstudent"]);
+              tution.uid = value['uid'];
+              if (tution.uid == u.uid) {
+                mytutions.add(tution);
+              }
+              tutions.add(tution);
+            }
+            int i = 0;
+            for (var key in snapshot.value.keys) {
+              tutions[i].tid = key;
+              i++;
+            }
+            print(mytutions);
+          });
+          print("hello2");
           var router = new MaterialPageRoute(
-              builder: (BuildContext context) => new MyApp());
+              builder: (BuildContext context) =>
+                  new AllTutionPage(u));
           Navigator.of(context).push(router);
         } else {
           setState(() {
@@ -154,6 +196,8 @@ class LogInState extends State<LogIn> {
         }
       }
     }).catchError((onError) {
+      print(onError);
+      print("object");
       setState(() {
         _error = "Incorrect Email or Password";
       });

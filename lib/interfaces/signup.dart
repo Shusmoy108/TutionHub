@@ -2,6 +2,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'loginapp.dart';
 import 'user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_multiselect/flutter_multiselect.dart';
+//import 'package:flutter_multiselect/selection_modal.dart';
 
 class SignUp extends StatelessWidget {
   // This widget is the root of your application.
@@ -44,82 +46,15 @@ class _SignUpState extends State<SignUpPage> {
   bool shayVal = false;
   bool mohVal = false;
   bool mirVal = false;
-  var areas = [];
-  Widget checkbox(String title, bool boolValue) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(title),
-        Checkbox(
-          value: boolValue,
-          onChanged: (bool value) {
-            /// manage the state of each value
-            setState(() {
-              switch (title) {
-                case "Uttara":
-                  uVal = value;
-                  break;
-                case "Shahbag":
-                  shahVal = value;
-                  break;
-                case "Ajimpur":
-                  aVal = value;
-                  break;
-                case "Motijheel":
-                  mVal = value;
-                  break;
-                case "Komplapur":
-                  komVal = value;
-                  break;
-                case "Khilgaon":
-                  khilVal = value;
-                  break;
-                case "Gulshan":
-                  gVal = value;
-                  break;
-                case "Bonani":
-                  bVal = value;
-                  break;
-                case "Cantonment":
-                  cVal = value;
-                  break;
-                case "Puran Dhaka":
-                  pdVal = value;
-                  break;
-                case "Jatrabari":
-                  jVal = value;
-                  break;
-                case "Narayanganj":
-                  nVal = value;
-                  break;
-                case "Shyamoli":
-                  shayVal = value;
-                  break;
-                case "MohammadPur":
-                  mohVal = value;
-                  break;
-                case "Mirpur":
-                  mirVal = value;
-                  break;
-              }
-            });
-          },
-        )
-      ],
-    );
-  }
 
-  Map<String, bool> values = {
-    'foo': true,
-    'bar': false,
-  };
   @override
   void initState() {
     setState(() {
       super.initState();
       genderValue = 0;
       gender = "Male";
-      user = User("", "", "", "", "", "", "", "", "");
+      user = User("", "", "", [], "", "", "", "", "");
+      user.notification = [];
       databaseReference = database.reference().child("users");
     });
 
@@ -159,7 +94,7 @@ class _SignUpState extends State<SignUpPage> {
               institutionField(),
               departmentField(),
               mobileField(),
-              areaField(),
+              xField(),
               passwordField(),
               addressField(),
               Container(
@@ -180,51 +115,6 @@ class _SignUpState extends State<SignUpPage> {
     return double.parse(s, (e) => null) != null;
   }
 
-  void addarea() {
-    if (uVal) {
-      areas.add("Uttara");
-    }
-    if (shahVal) {
-      areas.add("Shahbag");
-    }
-    if (aVal) {
-      areas.add("Ajimpur");
-    }
-    if (mVal) {
-      areas.add("Motijheel");
-    }
-    if (komVal) {
-      areas.add("Komplapur");
-    }
-    if (jVal) {
-      areas.add("Jatrabari");
-    }
-    if (nVal) {
-      areas.add("Narayanganj");
-    }
-    if (shayVal) {
-      areas.add("Shyamoli");
-    }
-    if (mohVal) {
-      areas.add("MohammadPur");
-    }
-    if (khilVal) {
-      areas.add("Khilgaon");
-    }
-    if (gVal) {
-      areas.add("Gulshan");
-    }
-    if (bVal) {
-      areas.add("Bonani");
-    }
-    if (cVal) {
-      areas.add("Cantonment");
-    }
-    if (pdVal) {
-      areas.add("Puran Dhaka");
-    }
-  }
-
   Widget errorField() {
     return new Text(
       _error,
@@ -232,90 +122,83 @@ class _SignUpState extends State<SignUpPage> {
     );
   }
 
-  Widget areaField() {
-    return Container(
-        child: Row(children: <Widget>[
-      new Text("Area", style: new TextStyle(color: Colors.black, fontSize: 16)),
-      new Padding(
-        padding: EdgeInsets.only(left: 10),
-      ),
-      Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              checkbox("Uttara", uVal),
-              new Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
-              ),
-              checkbox("Shahbag", shahVal),
-              new Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
-              ),
-              checkbox("Ajimpur", aVal),
-              new Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
-              ),
-              checkbox("Motijheel", mVal),
-              new Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
-              ),
-              checkbox("Komplapur", komVal),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              checkbox("Jatrabari", jVal),
-              new Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
-              ),
-              checkbox("Narayanganj", nVal),
-              new Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
-              ),
-              checkbox("Shyamoli", shayVal),
-              new Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
-              ),
-              checkbox("MohammadPur", mohVal),
-              new Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
-              ),
-            ],
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              checkbox("Khilgaon", khilVal),
-              new Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
-              ),
-              checkbox("Gulshan", gVal),
-              new Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
-              ),
-              checkbox("Bonani", bVal),
-              new Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
-              ),
-              checkbox("Cantonment", cVal),
-              new Padding(padding: EdgeInsets.only(left: 3, right: 3)),
-              checkbox("Mirpur", mirVal),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              checkbox("Puran Dhaka", pdVal),
-            ],
-          ),
+  Widget xField() {
+    return new MultiSelect(
+        autovalidate: false,
+        titleText: "Area",
+        validator: (value) {
+          if (value == null) {
+            return 'Please select one or more option(s)';
+          }
+        },
+        errorText: 'Please select one or more option(s)',
+        dataSource: [
+          {
+            "display": "Puran Dhaka",
+            "value": "Puran Dhaka",
+          },
+          {
+            "display": "Shahbag",
+            "value": "Shahbag",
+          },
+          {
+            "display": "Azimpur",
+            "value": "Azimpur",
+          },
+          {
+            "display": "Motizeel",
+            "value": "Motizeel",
+          },
+          {
+            "display": "Komolapur",
+            "value": "Komolapur",
+          },
+          {
+            "display": "MohammadPur",
+            "value": "MohammadPur",
+          },
+          {
+            "display": "Khilgaon",
+            "value": "Khilgaon",
+          },
+          {
+            "display": "Gulshan",
+            "value": "Gulshan",
+          },
+          {
+            "display": "Bonani",
+            "value": "Bonani",
+          },
+          {
+            "display": "Uttara",
+            "value": "Uttara",
+          },
+          {
+            "display": "Jatrabari",
+            "value": "Jatrabari",
+          },
+          {
+            "display": "Cantonment",
+            "value": "Cantonment",
+          },
+          {
+            "display": "Shyamoli",
+            "value": "Shyamoli",
+          },
+          {
+            "display": "Narayanganj",
+            "value": "Narayanganj",
+          }
         ],
-      ),
-    ]));
+        textField: 'display',
+        valueField: 'value',
+        filterable: true,
+        required: true,
+        value: null,
+        onSaved: (value) {
+          user.area = value;
+          print('The value is $value');
+        });
   }
 
   Widget emailField() {
@@ -427,8 +310,7 @@ class _SignUpState extends State<SignUpPage> {
       onPressed: () {
         if (formKey.currentState.validate()) {
           user.gender = gender;
-          addarea();
-          user.area = areas;
+          user.notification = [];
           formKey.currentState.save();
           databaseReference
               .orderByChild("email")

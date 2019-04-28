@@ -6,7 +6,9 @@ class User {
   String gender;
   String institution;
   String department;
-  var area;
+  String uid;
+  var area = [];
+  var notification = [];
   String address;
   String mobile;
   String password;
@@ -25,8 +27,8 @@ class User {
         address = snapshot.value["address"],
         mobile = snapshot.value["mobile"],
         password = snapshot.value["password"],
-        email = snapshot.value["email"];
-
+        email = snapshot.value["email"],
+        notification = snapshot.value["notification"];
   toJson() {
     return {
       "username": username,
@@ -37,7 +39,8 @@ class User {
       "area": area,
       "address": address,
       "mobile": mobile,
-      "email": email
+      "email": email,
+      "notification": notification
     };
   }
 }

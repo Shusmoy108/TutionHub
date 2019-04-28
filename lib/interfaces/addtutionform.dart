@@ -1,10 +1,13 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'tutionpage.dart';
 import 'tution.dart';
 import 'package:flutter/material.dart';
+import 'user.dart';
+import 'alltutionspage.dart';
 
 class AddTution extends StatelessWidget {
   // This widget is the root of your application.
+  User u;
+  AddTution(this.u);
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -12,19 +15,22 @@ class AddTution extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new AddTutionPage(),
+      home: new AddTutionPage(u),
     );
   }
 }
 
 class AddTutionPage extends StatefulWidget {
+  User u;
+  AddTutionPage(this.u);
   @override
-  _AddTutionPageState createState() => new _AddTutionPageState();
+  _AddTutionPageState createState() => new _AddTutionPageState(u);
 }
 
 class _AddTutionPageState extends State<AddTutionPage> {
-  List<Tution> boardMessages = List();
   Tution tution;
+  User u;
+  _AddTutionPageState(this.u);
   final FirebaseDatabase database = FirebaseDatabase.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   DatabaseReference databaseReference;
@@ -66,11 +72,14 @@ class _AddTutionPageState extends State<AddTutionPage> {
   ];
   @override
   void initState() {
-    super.initState();
-    _selectedClass = 'Class 1';
-    _selectedArea = 'Shahbag';
-    tution = Tution("", "", "", "", "", "", "");
-    databaseReference = database.reference().child("tutions");
+    setState(() {
+      super.initState();
+      _selectedClass = 'Class 1';
+      _selectedArea = 'Shahbag';
+      tution = Tution("", "", "", "", "", "", "");
+      databaseReference = database.reference().child("tutions");
+    });
+
     //databaseReference.onChildAdded.listen(_onEntryAdded);
     //databaseReference.onChildChanged.listen(_onEntryChanged);
   }
@@ -221,6 +230,9 @@ class _AddTutionPageState extends State<AddTutionPage> {
         if (formKey.currentState.validate()) {
           tution.area = _selectedArea;
           tution.cls = _selectedClass;
+          tution.uid = u.uid;
+          tution.status = "unbooked";
+          tution.interested = [];
           _selectedClass = 'Class 1';
           _selectedArea = 'Shahbag';
           formKey.currentState.save();
@@ -228,7 +240,7 @@ class _AddTutionPageState extends State<AddTutionPage> {
           //save form data to the database
           databaseReference.push().set(tution.toJson());
           var router = new MaterialPageRoute(
-              builder: (BuildContext context) => new MyApp());
+              builder: (BuildContext context) => new AllTutionPage(u));
           Navigator.of(context).push(router);
         }
       },

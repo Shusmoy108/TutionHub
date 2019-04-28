@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'tution.dart';
 import 'user.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'tutiondetails.dart';
 
-class Tutions extends StatelessWidget {
+class MyTution extends StatelessWidget {
   final List<Tution> tutions;
   User u;
+  List<User> users = List();
   bool ty = false;
-  Tutions(this.tutions, this.u);
+  MyTution(this.tutions, this.u);
 
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference databaseReference;
@@ -22,25 +24,41 @@ class Tutions extends StatelessWidget {
     //print("object");
   }
 
-  void user() {
-    databaseReference = database.reference().child("user");
-  }
+  void user(t, context) {
+    for (var val in t.interested) {
+      databaseReference = database.reference().child("users");
+      databaseReference.orderByKey().equalTo(val).once().then((onValue) {
+        for (var value in onValue.value.values) {
+          User us = User(
+              value["username"],
+              value["gender"],
+              value["address"],
+              value["area"],
+              value["department"],
+              value["institution"],
+              value["mobile"],
+              value["password"],
+              value["email"]);
+          users.add(us);
+        }
+        print("object");
+      }).catchError((onError) {
+        print(onError);
+      });
+    }
+    // var router = new MaterialPageRoute(
+    //     builder: (BuildContext context) =>
+    //         new TutionDetailsPage(u, alltutions, tutions, t, users));
+    // Navigator.of(context).push(router);
 
-  Widget button(index) {
-    return RaisedButton(
-      color: Colors.blue,
-      splashColor: Colors.blueGrey,
-      textColor: Colors.white,
-      onPressed: () => {add(index)},
-      child: Text("Interested", style: TextStyle(color: Colors.white)),
-    );
+    //;
   }
 
   Widget _buildProductItem(BuildContext context, int index) {
-    print(tutions[index]);
-    print("tut");
-    return Card(
-      child: Column(
+    print(tutions[index].interested);
+    print("tuti");
+    return ListTile(
+      title: Column(
         children: <Widget>[
           Text('Number Of Students : ${tutions[index].numberofstudent}',
               style: TextStyle(color: Colors.black)),
@@ -55,7 +73,18 @@ class Tutions extends StatelessWidget {
               style: TextStyle(color: Colors.black)),
           Text('Detailed Address : ${tutions[index].address}',
               style: TextStyle(color: Colors.black)),
-          button(index)
+          RaisedButton(
+            color: Colors.blue,
+            child: Text("See Interesteds"),
+            onPressed: () {
+              var router = new MaterialPageRoute(
+                  builder: (BuildContext context) => new TutionDetailsPage(
+                        u,
+                        tutions[index],
+                      ));
+              Navigator.of(context).push(router);
+            },
+          ),
         ],
       ),
     );

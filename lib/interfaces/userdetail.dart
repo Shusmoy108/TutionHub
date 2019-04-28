@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
-import 'tution.dart';
 import 'user.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class Tutions extends StatelessWidget {
-  final List<Tution> tutions;
+class UserDetails extends StatelessWidget {
+  final List<User> users;
   User u;
   bool ty = false;
-  Tutions(this.tutions, this.u);
+  UserDetails(this.users, this.u);
 
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference databaseReference;
   void add(index) {
-    databaseReference = database
-        .reference()
-        .child("tutions")
-        .child(tutions[index].tid)
-        .child("interested");
-    databaseReference.push().set(u.uid);
-
-    //print("object");
+    print("object");
   }
 
   void user() {
     databaseReference = database.reference().child("user");
+  }
+
+  void _launchURL(m) async {
+    String url = "tel:" + m;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget button(index) {
@@ -31,29 +33,27 @@ class Tutions extends StatelessWidget {
       color: Colors.blue,
       splashColor: Colors.blueGrey,
       textColor: Colors.white,
-      onPressed: () => {add(index)},
-      child: Text("Interested", style: TextStyle(color: Colors.white)),
+      onPressed: () {
+        String m = users[index].mobile;
+        _launchURL(m);
+      },
+      child: Text("Call", style: TextStyle(color: Colors.white)),
     );
   }
 
   Widget _buildProductItem(BuildContext context, int index) {
-    print(tutions[index]);
+    print(users[index]);
     print("tut");
     return Card(
       child: Column(
         children: <Widget>[
-          Text('Number Of Students : ${tutions[index].numberofstudent}',
+          Text('Username : ${users[index].username}',
               style: TextStyle(color: Colors.black)),
-          Text(tutions[index].cls, style: TextStyle(color: Colors.black)),
-          Text('Institution : ${tutions[index].institution}',
+          Text('Email : ${users[index].email}',
               style: TextStyle(color: Colors.black)),
-          Text('Subject : ${tutions[index].subject}',
+          Text('Institution : ${users[index].institution}',
               style: TextStyle(color: Colors.black)),
-          Text('Salary : ${tutions[index].salary}',
-              style: TextStyle(color: Colors.black)),
-          Text('Area : ${tutions[index].area}',
-              style: TextStyle(color: Colors.black)),
-          Text('Detailed Address : ${tutions[index].address}',
+          Text('Mobile Number : ${users[index].mobile}',
               style: TextStyle(color: Colors.black)),
           button(index)
         ],
@@ -63,11 +63,11 @@ class Tutions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(tutions);
+    print(users);
     print("tut");
     return ListView.builder(
       itemBuilder: _buildProductItem,
-      itemCount: tutions.length,
+      itemCount: users.length,
     );
   }
 }

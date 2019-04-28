@@ -7,7 +7,11 @@ class Tution {
   String salary;
   String institution;
   String area;
+  var interested = [];
+  String status;
   String address;
+  String tid;
+  String uid;
   String numberofstudent;
 
   Tution(this.cls, this.subject, this.salary, this.address, this.area,
@@ -21,7 +25,10 @@ class Tution {
         institution = snapshot.value["institution"],
         area = snapshot.value["area"],
         address = snapshot.value["address"],
-        numberofstudent = snapshot.value["numberofstudent"];
+        uid = snapshot.value["uid"],
+        numberofstudent = snapshot.value["numberofstudent"],
+        status = snapshot.value["status"],
+        interested = snapshot.value["interseted"];
 
   toJson() {
     return {
@@ -30,8 +37,11 @@ class Tution {
       "salary": salary,
       "institution": institution,
       "area": area,
+      "uid": uid,
       "address": address,
       "numberofstudent": numberofstudent,
+      "status": status,
+      "interested": interested
     };
   }
 }
