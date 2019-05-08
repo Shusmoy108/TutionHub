@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'tution.dart';
 import 'user.dart';
+import 'notice.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'tutiondetails.dart';
 
@@ -20,8 +21,6 @@ class MyTution extends StatelessWidget {
         .child(tutions[index].tid)
         .child("interested");
     databaseReference.push().set(u.uid);
-
-    //print("object");
   }
 
   void user(t, context) {
@@ -41,10 +40,7 @@ class MyTution extends StatelessWidget {
               value["email"]);
           users.add(us);
         }
-        print("object");
-      }).catchError((onError) {
-        print(onError);
-      });
+      }).catchError((onError) {});
     }
     // var router = new MaterialPageRoute(
     //     builder: (BuildContext context) =>
@@ -54,9 +50,59 @@ class MyTution extends StatelessWidget {
     //;
   }
 
+  void bookTution(index) {
+    if (tutions[index].status == 'booked') {
+      databaseReference =
+          database.reference().child("tutions/${tutions[index].tid}");
+      databaseReference.update({'status': 'unbooked'});
+      int now = new DateTime.now().millisecondsSinceEpoch;
+      String n =
+          '${tutions[index].uname}(${tutions[index].uemail}) has unbooked the tution';
+      Notice noti = Notice(n, now);
+
+      for (var val in tutions[index].interested) {
+        databaseReference = database
+            .reference()
+            .child("users")
+            .child(val)
+            .child('notification');
+        databaseReference.push().set(noti.toJson());
+      }
+      tutions[index].status = 'unbooked';
+    }
+    // } else if (t.status == 'booked') {
+    //   databaseReference = database.reference().child("tutions/${t.tid}");
+    //   databaseReference.update({'status': 'unbooked'});
+    //   t.status = 'unbooked';
+    // }
+  }
+
+  Widget button(index, context) {
+    if (tutions[index].status == 'unbooked') {
+      return new RaisedButton(
+        color: Colors.blue,
+        child: Text("See Interesteds"),
+        onPressed: () {
+          var router = new MaterialPageRoute(
+              builder: (BuildContext context) => new TutionDetailsPage(
+                    u,
+                    tutions[index],
+                  ));
+          Navigator.of(context).push(router);
+        },
+      );
+    } else {
+      return new RaisedButton(
+        color: Colors.blue,
+        child: Text("Unbook the Tution"),
+        onPressed: () {
+          bookTution(index);
+        },
+      );
+    }
+  }
+
   Widget _buildProductItem(BuildContext context, int index) {
-    print(tutions[index].interested);
-    print("tuti");
     return ListTile(
       title: Column(
         children: <Widget>[
@@ -75,7 +121,7 @@ class MyTution extends StatelessWidget {
               style: TextStyle(color: Colors.black)),
           RaisedButton(
             color: Colors.blue,
-            child: Text("See Interesteds"),
+            child: Text("See who are interested"),
             onPressed: () {
               var router = new MaterialPageRoute(
                   builder: (BuildContext context) => new TutionDetailsPage(
@@ -85,6 +131,13 @@ class MyTution extends StatelessWidget {
               Navigator.of(context).push(router);
             },
           ),
+          RaisedButton(
+            color: Colors.blue,
+            child: Text("Unbook your Tution"),
+            onPressed: () {
+              bookTution(index);
+            },
+          ),
         ],
       ),
     );
@@ -92,8 +145,6 @@ class MyTution extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(tutions);
-    print("tut");
     return ListView.builder(
       itemBuilder: _buildProductItem,
       itemCount: tutions.length,

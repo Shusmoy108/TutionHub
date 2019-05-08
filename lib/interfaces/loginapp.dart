@@ -100,8 +100,7 @@ class LogInState extends State<LogIn> {
       onPressed: () {
         if (formKey.currentState.validate()) {
           formKey.currentState.save();
-          debugPrint(_email);
-          debugPrint(_password);
+
           login();
 
           formKey.currentState.reset();
@@ -119,6 +118,7 @@ class LogInState extends State<LogIn> {
       onPressed: () {
         var router = new MaterialPageRoute(
             builder: (BuildContext context) => new SignUp());
+
         Navigator.of(context).push(router);
       },
     );
@@ -137,15 +137,12 @@ class LogInState extends State<LogIn> {
         .equalTo(_email)
         .once()
         .then((onValue) {
-      print(onValue.value.keys);
-      print(onValue.value.values);
       for (var value in onValue.value.values) {
         if (value['password'] == _password) {
           setState(() {
             _error = "";
           });
-          print("object");
-          print(value["area"]);
+
           User u;
           u = User(
               value["username"],
@@ -157,38 +154,13 @@ class LogInState extends State<LogIn> {
               value["mobile"],
               value["password"],
               value["email"]);
-          print(u);
+
           for (var key in onValue.value.keys) {
             u.uid = key;
           }
-          databaseReference.once().then((DataSnapshot snapshot) {
-            for (var value in snapshot.value.values) {
-              Tution tution = Tution(
-                  value['cls'],
-                  value["subject"],
-                  value["salary"],
-                  value["address"],
-                  value["area"],
-                  value["institution"],
-                  value["numberofstudent"]);
-              tution.uid = value['uid'];
-              if (tution.uid == u.uid) {
-                mytutions.add(tution);
-              }
-              tutions.add(tution);
-            }
-            int i = 0;
-            for (var key in snapshot.value.keys) {
-              tutions[i].tid = key;
-              i++;
-            }
-            print(mytutions);
-          });
-          print("hello2");
           var router = new MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  new AllTutionPage(u));
-          Navigator.of(context).push(router);
+              builder: (BuildContext context) => new AllTutionPage(u));
+          Navigator.of(context).pushReplacement(router);
         } else {
           setState(() {
             _error = "Incorrect Email or Password";
@@ -196,8 +168,6 @@ class LogInState extends State<LogIn> {
         }
       }
     }).catchError((onError) {
-      print(onError);
-      print("object");
       setState(() {
         _error = "Incorrect Email or Password";
       });

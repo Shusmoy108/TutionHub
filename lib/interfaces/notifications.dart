@@ -1,35 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-import './tutions.dart';
-import './tution.dart';
 import 'user.dart';
-import 'profile.dart';
+import 'alltutionspage.dart';
 import 'mytutionpage.dart';
+import 'profile.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'addtutionform.dart';
-import 'notifications.dart';
+import 'notice.dart';
 
-class AllTutionPage extends StatefulWidget {
+class Notifications extends StatefulWidget {
   User u;
-
-  AllTutionPage(this.u);
+  Notifications(this.u);
   @override
   State<StatefulWidget> createState() {
-    return AllTutionPageState(u);
+    return NotificationDetails(u);
   }
 }
 
-class AllTutionPageState extends State<AllTutionPage> {
+class NotificationDetails extends State<Notifications> {
   User u;
-  AllTutionPageState(this.u);
+
   final FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference databaseReference;
-
-  @override
-  void initState() {
-    setState(() {
-      super.initState();
-      databaseReference = database.reference().child("tutions");
+  NotificationDetails(this.u);
+  Future<List<Notice>> _getNotifications() async {
+    List<Notice> notifications = List();
+    databaseReference =
+        database.reference().child("users").child(u.uid).child('notification');
+    await databaseReference.once().then((DataSnapshot snapshot) {
+      for (var val in snapshot.value.values) {
+        print(val['time']);
+        print("hello");
+        Notice noti = Notice(val['noti'], val['time']);
+        print(noti.toString());
+        // noti.noti = val['noti'];
+        //noti.time = val['time'];
+        print(noti.time);
+        print("hello");
+        notifications.add(noti);
+      }
     });
+    notifications.sort((a, b) => b.time.compareTo(a.time));
+    print(notifications.length);
+    print("hello");
+    return notifications;
   }
 
   Future<bool> _onWillPop() {
@@ -51,52 +64,6 @@ class AllTutionPageState extends State<AllTutionPage> {
               ),
         ) ??
         false;
-  }
-  Future<List<Tution>> _getTution() async {
-    List<Tution> _tutions = List();
-
-    await databaseReference.once().then((DataSnapshot snapshot) {
-      if (snapshot.value.values != null) {
-        for (var value in snapshot.value.values) {
-          Tution tution = Tution(
-              value['cls'],
-              value["subject"],
-              value["salary"],
-              value["address"],
-              value["area"],
-              value["institution"],
-              value["numberofstudent"]);
-         
-          if (value['interested'] != null) {
-            for (var value in value['interested'].values) {
-              tution.interested.add(value['uid']);
-            }
-          } else {
-            tution.interested = [];
-          }
-         
-          tution.status = value['status'];
-          tution.uid = value['uid'];
-          tution.uname = value['uname'];
-          tution.uemail = value['uemail'];
-          _tutions.add(tution);
-        }
-        int i = 0;
-        for (var key in snapshot.value.keys) {
-          _tutions[i].tid = key;
-          i++;
-        }
-      } else {
-        _tutions = [];
-      }
-    });
-    return _tutions;
-  }
-
-  void addTution() {
-    var router = new MaterialPageRoute(
-        builder: (BuildContext context) => new AddTution(u));
-    Navigator.of(context).push(router);
   }
 
   @override
@@ -176,18 +143,44 @@ class AllTutionPageState extends State<AllTutionPage> {
             body: Container(
                 margin: EdgeInsets.all(10.0),
                 child: FutureBuilder(
-                  future: _getTution(),
+                  future: _getNotifications(),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.data == null) {
                       return Container(
                         child: Center(
-                          child: Text("Loading...."),
+                          child: Text("No Notifications"),
                         ),
                       );
                     } else {
-                      return Tutions(snapshot.data, u);
+                      return Notices(snapshot.data, u);
                     }
                   },
                 ))));
+  }
+}
+
+class Notices extends StatelessWidget {
+  final List<Notice> notifications;
+
+  User u;
+  bool ty = false;
+  Notices(this.notifications, this.u);
+
+  FirebaseDatabase database = FirebaseDatabase.instance;
+  DatabaseReference databaseReference;
+
+  Widget _buildProductItem(BuildContext context, int index) {
+    return Card(
+      child: Text('${notifications[index].noti}',
+          style: TextStyle(color: Colors.black, fontSize: 20)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemBuilder: _buildProductItem,
+      itemCount: notifications.length,
+    );
   }
 }

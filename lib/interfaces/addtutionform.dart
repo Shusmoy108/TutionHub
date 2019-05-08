@@ -231,6 +231,8 @@ class _AddTutionPageState extends State<AddTutionPage> {
           tution.area = _selectedArea;
           tution.cls = _selectedClass;
           tution.uid = u.uid;
+          tution.uemail = u.email;
+          tution.uname = u.username;
           tution.status = "unbooked";
           tution.interested = [];
           _selectedClass = 'Class 1';

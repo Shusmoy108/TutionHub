@@ -3,15 +3,16 @@ import 'user.dart';
 import 'alltutionspage.dart';
 import 'mytutionpage.dart';
 import 'addtutionform.dart';
+import 'notifications.dart';
 
 class Profile extends StatelessWidget {
   User u;
 
   Profile(this.u);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(primarySwatch: Colors.deepPurple),
         home: Scaffold(
             appBar: AppBar(title: Text('Tuition Hub')),
             drawer: Drawer(
@@ -47,28 +48,38 @@ class Profile extends StatelessWidget {
                       var router = new MaterialPageRoute(
                           builder: (BuildContext context) =>
                               new AllTutionPage(u));
-                      Navigator.of(context).push(router);
+                      Navigator.of(context).pushReplacement(router);
                     },
                   ),
                   ListTile(
                     title: Text("My Tutions"),
-                    trailing: Icon(Icons.group_work),
+                    trailing: Icon(Icons.subject),
                     onTap: () {
                       var router = new MaterialPageRoute(
                           builder: (BuildContext context) =>
                               new MyTutionPage(u));
-                      Navigator.of(context).push(router);
+                      Navigator.of(context).pushReplacement(router);
                     },
                   ),
                   ListTile(
                     title: Text("Add Tutions"),
-                    trailing: Icon(Icons.person_outline),
+                    trailing: Icon(Icons.add_circle),
                     onTap: () {
                       var router = new MaterialPageRoute(
                           builder: (BuildContext context) => new AddTution(u));
                       Navigator.of(context).push(router);
                     },
                   ),
+                  ListTile(
+                    title: Text("Notifications"),
+                    trailing: Icon(Icons.notifications),
+                    onTap: () {
+                      var router = new MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              new Notifications(u));
+                      Navigator.of(context).pushReplacement(router);
+                    },
+                  )
                 ],
               ),
             ),

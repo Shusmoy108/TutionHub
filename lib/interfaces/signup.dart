@@ -197,7 +197,6 @@ class _SignUpState extends State<SignUpPage> {
         value: null,
         onSaved: (value) {
           user.area = value;
-          print('The value is $value');
         });
   }
 
@@ -333,7 +332,6 @@ class _SignUpState extends State<SignUpPage> {
               });
             }
           }).catchError((onError) {
-            print("xxx");
             setState(() {
               _error = "";
             });
@@ -342,10 +340,8 @@ class _SignUpState extends State<SignUpPage> {
             databaseReference.push().set(user.toJson());
             var router = new MaterialPageRoute(
                 builder: (BuildContext context) => new LogIn());
-            Navigator.of(context).push(router);
+            Navigator.of(context).pushReplacement(router);
           });
-          print(_error);
-          if (_error == "") {}
         }
       },
     );

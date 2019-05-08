@@ -7,6 +7,7 @@ import 'profile.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'userdetail.dart';
 import 'addtutionform.dart';
+import 'notifications.dart';
 
 class TutionDetailsPage extends StatefulWidget {
   User u;
@@ -47,23 +48,24 @@ class TutionDetails extends State<TutionDetailsPage> {
                 value["mobile"],
                 value["password"],
                 value["email"]);
+            us.uid = val;
             users.add(us);
           }
-          print("object");
+
+        
         }).catchError((onError) {
-          print(onError);
+        
         });
       }
     }
-    print(users.length);
+  
     return users;
   }
 
   @override
   Widget build(BuildContext context) {
-    print(tution.salary);
+
     return MaterialApp(
-        theme: ThemeData(primarySwatch: Colors.deepPurple),
         home: Scaffold(
             appBar: AppBar(title: Text('Tuition Hub')),
             drawer: Drawer(
@@ -99,26 +101,36 @@ class TutionDetails extends State<TutionDetailsPage> {
                       var router = new MaterialPageRoute(
                           builder: (BuildContext context) =>
                               new AllTutionPage(u));
-                      Navigator.of(context).push(router);
+                      Navigator.of(context).pushReplacement(router);
                     },
                   ),
                   ListTile(
                     title: Text("My Tutions"),
-                    trailing: Icon(Icons.group_work),
+                    trailing: Icon(Icons.subject),
                     onTap: () {
                       var router = new MaterialPageRoute(
                           builder: (BuildContext context) =>
                               new MyTutionPage(u));
-                      Navigator.of(context).push(router);
+                      Navigator.of(context).pushReplacement(router);
                     },
                   ),
                   ListTile(
                     title: Text("Add Tutions"),
-                    trailing: Icon(Icons.person_outline),
+                    trailing: Icon(Icons.add_circle),
                     onTap: () {
                       var router = new MaterialPageRoute(
                           builder: (BuildContext context) => new AddTution(u));
                       Navigator.of(context).push(router);
+                    },
+                  ),
+                  ListTile(
+                    title: Text("Notifications"),
+                    trailing: Icon(Icons.notifications),
+                    onTap: () {
+                      var router = new MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              new Notifications(u));
+                      Navigator.of(context).pushReplacement(router);
                     },
                   ),
                 ],
@@ -136,77 +148,9 @@ class TutionDetails extends State<TutionDetailsPage> {
                         ),
                       );
                     } else {
-                      return UserDetails(snapshot.data, u);
+                      return UserDetails(snapshot.data, u, tution);
                     }
                   },
                 ))));
-  }
-
-  Widget userField() {
-    return ListTile(title: Text("hello"));
-  }
-
-  Widget nameField() {
-    return ListTile(
-        title: Text(
-      'Number of Student : ${tution.numberofstudent}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget emailField() {
-    return ListTile(
-        title: Text(
-      'Class : ${tution.cls}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget insititutionField() {
-    return ListTile(
-        title: Text(
-      'Institution : ${tution.institution}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget departmentField() {
-    return ListTile(
-        title: Text(
-      'Subject : ${tution.subject}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget genderField() {
-    return ListTile(
-        title: Text(
-      'Salary : ${tution.salary}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget mobileField() {
-    return ListTile(
-        title: Text(
-      'Mobile Number : ${u.mobile}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget areaField() {
-    return ListTile(
-        title: Text(
-      'Area : ${tution.area}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget addressField() {
-    return ListTile(
-        title: Text(
-      'Detailed Address : ${tution.address}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
   }
 }

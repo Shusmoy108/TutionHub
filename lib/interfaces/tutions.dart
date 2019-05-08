@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'tution.dart';
 import 'user.dart';
+import 'notice.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class Tutions extends StatelessWidget {
@@ -17,9 +18,22 @@ class Tutions extends StatelessWidget {
         .child("tutions")
         .child(tutions[index].tid)
         .child("interested");
-    databaseReference.push().set(u.uid);
-
-    //print("object");
+    var user = {"uid": u.uid};
+    databaseReference.orderByChild("uid").equalTo(u.uid).once().then((onValue) {
+      if (onValue.value == null) {
+        databaseReference.push().set(user);
+        int now = new DateTime.now().millisecondsSinceEpoch;
+        String n =
+            "You are interested in ${tutions[index].uname}'s(${tutions[index].uemail}) tution";
+        Notice noti = Notice(n, now);
+        databaseReference = database
+            .reference()
+            .child("users")
+            .child(u.uid)
+            .child("notification");
+        databaseReference.push().set(noti.toJson());
+      }
+    });
   }
 
   void user() {
@@ -37,8 +51,6 @@ class Tutions extends StatelessWidget {
   }
 
   Widget _buildProductItem(BuildContext context, int index) {
-    print(tutions[index]);
-    print("tut");
     return Card(
       child: Column(
         children: <Widget>[
@@ -63,8 +75,6 @@ class Tutions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(tutions);
-    print("tut");
     return ListView.builder(
       itemBuilder: _buildProductItem,
       itemCount: tutions.length,

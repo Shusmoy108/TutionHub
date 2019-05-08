@@ -6,6 +6,7 @@ import 'user.dart';
 import 'alltutionspage.dart';
 import 'profile.dart';
 import 'addtutionform.dart';
+import 'notifications.dart';
 
 class MyTutionPage extends StatefulWidget {
   User u;
@@ -68,24 +69,47 @@ class MyTutionPageState extends State<MyTutionPage> {
 
   Future<List<Tution>> _getMyTution() async {
     List<Tution> _mytutions = List();
+    List<Tution> _tutions = List();
     await databaseReference.once().then((DataSnapshot snapshot) {
-      for (var value in snapshot.value.values) {
-        Tution tution = Tution(
-            value['cls'],
-            value["subject"],
-            value["salary"],
-            value["address"],
-            value["area"],
-            value["institution"],
-            value["numberofstudent"]);
-        for (var value in value['interested'].values) {
-          tution.interested.add(value);
-        }
+      if (snapshot.value.values != null) {
+        for (var value in snapshot.value.values) {
+          Tution tution = Tution(
+              value['cls'],
+              value["subject"],
+              value["salary"],
+              value["address"],
+              value["area"],
+              value["institution"],
+              value["numberofstudent"]);
 
-        tution.uid = value['uid'];
-        if (tution.uid == u.uid) {
-          _mytutions.add(tution);
+          if (value['interested'] != null) {
+            for (var value in value['interested'].values) {
+              tution.interested.add(value['uid']);
+            }
+          } else {
+            tution.interested = [];
+          }
+          tution.status = value['status'];
+          tution.uid = value['uid'];
+          tution.uname = value['uname'];
+          tution.uemail = value['uemail'];
+          _tutions.add(tution);
+          if (tution.uid == u.uid) {
+            tution.f = 'm';
+          }
         }
+        int i = 0;
+        for (var key in snapshot.value.keys) {
+          _tutions[i].tid = key;
+          i++;
+        }
+        for (var x = 0; x < _tutions.length; x++) {
+          if (_tutions[x].f == 'm') {
+            _mytutions.add(_tutions[x]);
+          }
+        }
+      } else {
+        _mytutions = [];
       }
     });
     print(_mytutions.length);
@@ -103,7 +127,7 @@ class MyTutionPageState extends State<MyTutionPage> {
           context: context,
           builder: (context) => new AlertDialog(
                 title: new Text('Are you sure?'),
-                content: new Text('Do you want to exit an App'),
+                content: new Text('Do you want to exit Tuition Hub'),
                 actions: <Widget>[
                   new FlatButton(
                     onPressed: () => Navigator.of(context).pop(false),
@@ -153,31 +177,41 @@ class MyTutionPageState extends State<MyTutionPage> {
                   ),
                   ListTile(
                     title: Text("Tutions"),
-                    trailing: Icon(Icons.person_outline),
+                    trailing: Icon(Icons.group_work),
                     onTap: () {
                       var router = new MaterialPageRoute(
                           builder: (BuildContext context) =>
                               new AllTutionPage(u));
-                      Navigator.of(context).push(router);
+                      Navigator.of(context).pushReplacement(router);
                     },
                   ),
                   ListTile(
                     title: Text("My Tutions"),
-                    trailing: Icon(Icons.person_outline),
+                    trailing: Icon(Icons.subject),
                     onTap: () {
                       var router = new MaterialPageRoute(
                           builder: (BuildContext context) =>
                               new MyTutionPage(u));
-                      Navigator.of(context).push(router);
+                      Navigator.of(context).pushReplacement(router);
                     },
                   ),
                   ListTile(
                     title: Text("Add Tutions"),
-                    trailing: Icon(Icons.person_outline),
+                    trailing: Icon(Icons.add_circle),
                     onTap: () {
                       var router = new MaterialPageRoute(
                           builder: (BuildContext context) => new AddTution(u));
                       Navigator.of(context).push(router);
+                    },
+                  ),
+                  ListTile(
+                    title: Text("Notifications"),
+                    trailing: Icon(Icons.notifications),
+                    onTap: () {
+                      var router = new MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              new Notifications(u));
+                      Navigator.of(context).pushReplacement(router);
                     },
                   ),
                 ],

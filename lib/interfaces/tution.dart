@@ -12,7 +12,10 @@ class Tution {
   String address;
   String tid;
   String uid;
+  String uemail;
+  String uname;
   String numberofstudent;
+  String f = 'x';
 
   Tution(this.cls, this.subject, this.salary, this.address, this.area,
       this.institution, this.numberofstudent);
@@ -41,7 +44,9 @@ class Tution {
       "address": address,
       "numberofstudent": numberofstudent,
       "status": status,
-      "interested": interested
+      "interested": interested,
+      'uemail': uemail,
+      'uname': uname
     };
   }
 }
