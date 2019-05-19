@@ -16,6 +16,10 @@ class Tution {
   String uname;
   String numberofstudent;
   String f = 'x';
+  String unbooknumber = "0";
+  String tutorname;
+  String tutoremail;
+  String tutorid;
 
   Tution(this.cls, this.subject, this.salary, this.address, this.area,
       this.institution, this.numberofstudent);
@@ -46,7 +50,8 @@ class Tution {
       "status": status,
       "interested": interested,
       'uemail': uemail,
-      'uname': uname
+      'uname': uname,
+      "unbooknumber": unbooknumber
     };
   }
 }

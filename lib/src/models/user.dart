@@ -13,9 +13,21 @@ class User {
   String mobile;
   String password;
   String email;
+  String rating;
+  String number;
 
-  User(this.username, this.gender, this.address, this.area, this.department,
-      this.institution, this.mobile, this.password, this.email);
+  User(
+      this.username,
+      this.gender,
+      this.address,
+      this.area,
+      this.department,
+      this.institution,
+      this.mobile,
+      this.password,
+      this.email,
+      this.rating,
+      this.number);
 
   User.fromSnapshot(DataSnapshot snapshot)
       : key = snapshot.key,
@@ -28,6 +40,8 @@ class User {
         mobile = snapshot.value["mobile"],
         password = snapshot.value["password"],
         email = snapshot.value["email"],
+        rating = snapshot.value["rating"],
+        number = snapshot.value["number"],
         notification = snapshot.value["notification"];
   toJson() {
     return {
@@ -40,7 +54,9 @@ class User {
       "address": address,
       "mobile": mobile,
       "email": email,
-      "notification": notification
+      "notification": notification,
+      "rating": rating,
+      "number": number
     };
   }
 }

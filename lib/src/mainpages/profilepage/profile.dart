@@ -1,19 +1,50 @@
 import 'package:flutter/material.dart';
-import 'user.dart';
-import 'alltutionspage.dart';
-import 'mytutionpage.dart';
-import 'addtutionform.dart';
-import 'notifications.dart';
+import '../../models/user.dart';
+import '../alltutionpage/alltutionspage.dart';
+import '../mytutionpage/mytutionpage.dart';
+import '../notificationpage/notifications.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
+  User u;
+  Profile(this.u);
+  @override
+  State<StatefulWidget> createState() {
+    return ProfileDetails(u);
+  }
+}
+
+class ProfileDetails extends State<Profile> {
   User u;
 
-  Profile(this.u);
+  ProfileDetails(this.u);
+
+  Future<bool> _onWillPop() {
+    return showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+                title: new Text('Are you sure?'),
+                content: new Text('Do you want to exit Tuition Hub'),
+                actions: <Widget>[
+                  new FlatButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: new Text('No'),
+                  ),
+                  new FlatButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: new Text('Yes'),
+                  ),
+                ],
+              ),
+        ) ??
+        false;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
             appBar: AppBar(title: Text('Tuition Hub')),
             drawer: Drawer(
               child: ListView(
@@ -33,12 +64,15 @@ class Profile extends StatelessWidget {
                     ),
                   ),
                   ListTile(
-                    title: Text("Profile"),
+                    title: Text(
+                      "Profile",
+                      style: new TextStyle(color: Colors.blueAccent),
+                    ),
                     trailing: Icon(Icons.person),
                     onTap: () {
                       var router = new MaterialPageRoute(
                           builder: (BuildContext context) => new Profile(u));
-                      Navigator.of(context).push(router);
+                      Navigator.of(context).pushReplacement(router);
                     },
                   ),
                   ListTile(
@@ -62,15 +96,6 @@ class Profile extends StatelessWidget {
                     },
                   ),
                   ListTile(
-                    title: Text("Add Tutions"),
-                    trailing: Icon(Icons.add_circle),
-                    onTap: () {
-                      var router = new MaterialPageRoute(
-                          builder: (BuildContext context) => new AddTution(u));
-                      Navigator.of(context).push(router);
-                    },
-                  ),
-                  ListTile(
                     title: Text("Notifications"),
                     trailing: Icon(Icons.notifications),
                     onTap: () {
@@ -84,20 +109,41 @@ class Profile extends StatelessWidget {
               ),
             ),
             body: Container(
-              alignment: Alignment.center,
-              child: new ListView(
-                children: <Widget>[
-                  nameField(),
-                  emailField(),
-                  genderField(),
-                  insititutionField(),
-                  departmentField(),
-                  mobileField(),
-                  areaField(),
-                  addressField()
-                ],
-              ),
-            )));
+                alignment: Alignment.center,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      SmoothStarRating(
+                        allowHalfRating: false,
+                        starCount: 5,
+                        rating: double.parse(u.rating),
+                        size: 40.0,
+                        color: Colors.green,
+                        borderColor: Colors.green,
+                      ),
+                      stylishText('Name : ${u.username}', 15.0),
+                      stylishText('Email : ${u.email}', 15.0),
+                      stylishText('Gender : ${u.gender}', 15.0),
+                      stylishText('Institution : ${u.institution}', 15.0),
+                      stylishText('Department : ${u.department}', 15.0),
+                      stylishText('Mobile Number : ${u.mobile}', 15.0),
+                      stylishText('Area : ${u.area}', 15.0),
+                      stylishText('Detailed Address : ${u.address}', 15.0),
+                    ],
+                  ),
+                ))));
+  }
+
+  Widget stylishText(text, size) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: size,
+        //fontWeight: FontWeight.bold,
+        color: Colors.black87,
+        fontFamily: 'Merienda',
+      ),
+    );
   }
 
   Widget userField() {

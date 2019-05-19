@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import './tution.dart';
+import '../../models/tution.dart';
+import '../../models/user.dart';
+import '../addtutionpage/addtutionform.dart';
+import '../alltutionpage/alltutionspage.dart';
+import '../notificationpage/notifications.dart';
+import '../profilepage/profile.dart';
 import 'mytution.dart';
-import 'user.dart';
-import 'alltutionspage.dart';
-import 'profile.dart';
-import 'addtutionform.dart';
-import 'notifications.dart';
 
 class MyTutionPage extends StatefulWidget {
   User u;
@@ -93,6 +93,12 @@ class MyTutionPageState extends State<MyTutionPage> {
           tution.uid = value['uid'];
           tution.uname = value['uname'];
           tution.uemail = value['uemail'];
+          tution.unbooknumber = value['unbooknumber'];
+          if (tution.status == "booked") {
+            tution.tutorname = value['tutorname'];
+            tution.tutoremail = value['tutoremail'];
+            tution.tutorid = value['tutorid'];
+          }
           _tutions.add(tution);
           if (tution.uid == u.uid) {
             tution.f = 'm';
@@ -148,90 +154,96 @@ class MyTutionPageState extends State<MyTutionPage> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-            appBar: AppBar(title: Text('Tuition Hub')),
-            drawer: Drawer(
-              child: ListView(
-                children: <Widget>[
-                  UserAccountsDrawerHeader(
-                    accountName: Text(u.username),
-                    accountEmail: Text(u.email),
-                    currentAccountPicture: CircleAvatar(
-                      backgroundColor:
-                          Theme.of(context).platform == TargetPlatform.iOS
-                              ? Colors.blue
-                              : Colors.white,
-                      child: Text(
-                        u.username.substring(0, 1),
-                        style: TextStyle(fontSize: 40.0),
-                      ),
+          appBar: AppBar(title: Text('Tuition Hub')),
+          drawer: Drawer(
+            child: ListView(
+              children: <Widget>[
+                UserAccountsDrawerHeader(
+                  accountName: Text(u.username),
+                  accountEmail: Text(u.email),
+                  currentAccountPicture: CircleAvatar(
+                    backgroundColor:
+                        Theme.of(context).platform == TargetPlatform.iOS
+                            ? Colors.blue
+                            : Colors.white,
+                    child: Text(
+                      u.username.substring(0, 1),
+                      style: TextStyle(fontSize: 40.0),
                     ),
                   ),
-                  ListTile(
-                    title: Text("Profile"),
-                    trailing: Icon(Icons.person),
-                    onTap: () {
-                      var router = new MaterialPageRoute(
-                          builder: (BuildContext context) => new Profile(u));
-                      Navigator.of(context).push(router);
-                    },
-                  ),
-                  ListTile(
-                    title: Text("Tutions"),
-                    trailing: Icon(Icons.group_work),
-                    onTap: () {
-                      var router = new MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              new AllTutionPage(u));
-                      Navigator.of(context).pushReplacement(router);
-                    },
-                  ),
-                  ListTile(
-                    title: Text("My Tutions"),
-                    trailing: Icon(Icons.subject),
-                    onTap: () {
-                      var router = new MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              new MyTutionPage(u));
-                      Navigator.of(context).pushReplacement(router);
-                    },
-                  ),
-                  ListTile(
-                    title: Text("Add Tutions"),
-                    trailing: Icon(Icons.add_circle),
-                    onTap: () {
-                      var router = new MaterialPageRoute(
-                          builder: (BuildContext context) => new AddTution(u));
-                      Navigator.of(context).push(router);
-                    },
-                  ),
-                  ListTile(
-                    title: Text("Notifications"),
-                    trailing: Icon(Icons.notifications),
-                    onTap: () {
-                      var router = new MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              new Notifications(u));
-                      Navigator.of(context).pushReplacement(router);
-                    },
-                  ),
-                ],
-              ),
-            ),
-            body: Container(
-                margin: EdgeInsets.all(10.0),
-                child: FutureBuilder(
-                  future: _getMyTution(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.data == null) {
-                      return Container(
-                        child: Center(
-                          child: Text("Loading...."),
-                        ),
-                      );
-                    } else {
-                      return MyTution(snapshot.data, u);
-                    }
+                ),
+                ListTile(
+                  title: Text("Profile"),
+                  trailing: Icon(Icons.person),
+                  onTap: () {
+                    var router = new MaterialPageRoute(
+                        builder: (BuildContext context) => new Profile(u));
+                    Navigator.of(context).pushReplacement(router);
                   },
-                ))));
+                ),
+                ListTile(
+                  title: Text("Tutions"),
+                  trailing: Icon(Icons.group_work),
+                  onTap: () {
+                    var router = new MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            new AllTutionPage(u));
+                    Navigator.of(context).pushReplacement(router);
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    "My Tutions",
+                    style: new TextStyle(color: Colors.blueAccent),
+                  ),
+                  trailing: Icon(Icons.subject),
+                  onTap: () {
+                    var router = new MaterialPageRoute(
+                        builder: (BuildContext context) => new MyTutionPage(u));
+                    Navigator.of(context).pushReplacement(router);
+                  },
+                ),
+                ListTile(
+                  title: Text("Notifications"),
+                  trailing: Icon(Icons.notifications),
+                  onTap: () {
+                    var router = new MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            new Notifications(u));
+                    Navigator.of(context).pushReplacement(router);
+                  },
+                ),
+              ],
+            ),
+          ),
+          body: Container(
+              margin: EdgeInsets.all(10.0),
+              child: FutureBuilder(
+                future: _getMyTution(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.data == null) {
+                    return Container(
+                      child: Center(
+                        child: Text("You have not posted any tutions yet..."),
+                      ),
+                    );
+                  } else {
+                    return MyTution(snapshot.data, u);
+                  }
+                },
+              )),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () {
+              var router = new MaterialPageRoute(
+                  builder: (BuildContext context) => new AddTution(u));
+              Navigator.of(context).push(router);
+            },
+            label: Text(
+              'Add Tution',
+            ),
+            icon: Icon(Icons.add),
+            backgroundColor: Color.fromRGBO(220, 20, 60, 0.8),
+          ),
+        ));
   }
 }

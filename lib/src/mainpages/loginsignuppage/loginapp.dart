@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import './signup.dart';
-
-import 'tution.dart';
-import 'user.dart';
-import 'alltutionspage.dart';
 import 'package:firebase_database/firebase_database.dart';
+import '../../models/tution.dart';
+import '../../models/user.dart';
+import '../alltutionpage/alltutionspage.dart';
+import 'signup.dart';
 
 class LogIn extends StatefulWidget {
   @override
@@ -153,21 +152,31 @@ class LogInState extends State<LogIn> {
               value["institution"],
               value["mobile"],
               value["password"],
-              value["email"]);
-
+              value["email"],
+              value["rating"],
+              value["number"]);
+          print(value);
+          // String x = value["number"];
+          // u.number = int.parse(x);
+          // // u.rating = value["rating"];
+          print(u.number);
+          print(u.rating);
           for (var key in onValue.value.keys) {
             u.uid = key;
           }
+
           var router = new MaterialPageRoute(
               builder: (BuildContext context) => new AllTutionPage(u));
           Navigator.of(context).pushReplacement(router);
         } else {
+          print("fdds");
           setState(() {
             _error = "Incorrect Email or Password";
           });
         }
       }
     }).catchError((onError) {
+      print(onError);
       setState(() {
         _error = "Incorrect Email or Password";
       });

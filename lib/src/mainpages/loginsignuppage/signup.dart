@@ -1,9 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'loginapp.dart';
-import 'user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multiselect/flutter_multiselect.dart';
-//import 'package:flutter_multiselect/selection_modal.dart';
+import '../../models/user.dart';
+import 'loginapp.dart';
 
 class SignUp extends StatelessWidget {
   // This widget is the root of your application.
@@ -53,7 +52,7 @@ class _SignUpState extends State<SignUpPage> {
       super.initState();
       genderValue = 0;
       gender = "Male";
-      user = User("", "", "", [], "", "", "", "", "");
+      user = User("", "", "", [], "", "", "", "", "", "5", "1");
       user.notification = [];
       databaseReference = database.reference().child("users");
     });
@@ -321,6 +320,7 @@ class _SignUpState extends State<SignUpPage> {
                 _error = "";
               });
               formKey.currentState.reset();
+
               //save form data to the database
               databaseReference.push().set(user.toJson());
               var router = new MaterialPageRoute(

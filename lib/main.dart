@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import './interfaces/loginapp.dart';
+import './src/mainpages/loginsignuppage/loginpage.dart';
 
 void main() {
   runApp(new MaterialApp(
     color: Colors.greenAccent,
     title: 'TuitionHub ',
-    home: new LogIn(),
+    debugShowCheckedModeBanner: false,
+    //debugShowMaterialGrid: false,
+    home: new LoginPage(),
     //title: 'Layouts',
     //home: new Gesture(title: 'Gesture',),
     //home:new Home(),

@@ -1,8 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'tution.dart';
 import 'package:flutter/material.dart';
-import 'user.dart';
-import 'alltutionspage.dart';
+import '../../models/tution.dart';
+import '../../models/user.dart';
+import '../alltutionpage/alltutionspage.dart';
 
 class AddTution extends StatelessWidget {
   // This widget is the root of your application.
