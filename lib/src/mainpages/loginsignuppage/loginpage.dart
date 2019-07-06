@@ -1,6 +1,8 @@
+import 'package:TuitionHub/src/mainpages/homepage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/tution.dart';
 import '../../models/user.dart';
 import '../alltutionpage/alltutionspage.dart';
@@ -40,6 +42,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     });
   }
 
+  saveAuthData(bool value, User u) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool('auth', value);
+    sp.setString("email", u.email);
+  }
+
   void login() {
     databaseReference
         .orderByChild("email")
@@ -64,19 +72,21 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               value["password"],
               value["email"],
               value["rating"],
-              value["number"]);
-          print(value);
+              value["number"],
+              value["subject"]);
+              u.etuition=value["etuition"];
+          //print(value);
           // String x = value["number"];
           // u.number = int.parse(x);
           // // u.rating = value["rating"];
-          print(u.number);
-          print(u.rating);
+         // print(u.number);
+         // print(u.rating);
           for (var key in onValue.value.keys) {
             u.uid = key;
           }
-
+          saveAuthData(true, u);
           var router = new MaterialPageRoute(
-              builder: (BuildContext context) => new AllTutionPage(u));
+              builder: (BuildContext context) => new HomePage(u));
           Navigator.of(context).pushReplacement(router);
         } else {
           print("fdds");

@@ -207,11 +207,51 @@ class Tutions extends StatelessWidget {
       ),
     );
   }
+  Widget buildProductItem(BuildContext context, int index) {
+    return Container(
+      color: Colors.white,
+      margin: EdgeInsets.all(10),
+      child:Column(
+        children: <Widget>[
+Row(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+ stylishText(
+              'Number Of Students : ${tutions[index].numberofstudent}', 13.0),
+          stylishText(tutions[index].cls, 13.0),
+          stylishText('Institution : ${tutions[index].institution}', 13.0),
+          stylishText('Subject : ${tutions[index].subject}', 13.0),
+            ],
+          ),
+           Padding(
+            padding: EdgeInsets.only(left: 10),
+          ),
+          Column(children: <Widget>[
+ stylishText('Salary : ${tutions[index].salary}', 13.0),
+          stylishText('Area : ${tutions[index].area}', 13.0),
+          stylishText('Detailed Address : ${tutions[index].address}', 13.0),
+
+          ],)
+         
+         
+         ,
+         
+        ],
+      ),
+       button(index, context),
+          Padding(
+            padding: EdgeInsets.only(bottom: 5),
+          ),
+        ],
+      ) 
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemBuilder: _buildProductItem,
+      itemBuilder: buildProductItem,
       itemCount: tutions.length,
     );
   }

@@ -3,7 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 class Tution {
   String key;
   String cls;
-  String subject;
+  var subject=[];
   String salary;
   String institution;
   String area;

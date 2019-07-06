@@ -1,24 +1,26 @@
-import 'package:TuitionHub/src/mainpages/profilepage/editprofile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import '../../models/user.dart';
 import '../alltutionpage/alltutionspage.dart';
 import '../mytutionpage/mytutionpage.dart';
 import '../notificationpage/notifications.dart';
+import '../profilepage/profile.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
-class Profile extends StatefulWidget {
+class DetailsPage extends StatefulWidget {
   User u;
-  Profile(this.u);
+   List<String> review;
+  DetailsPage(this.u,this.review);
   @override
   State<StatefulWidget> createState() {
-    return ProfileDetails(u);
+    return Details(u,review);
   }
 }
 
-class ProfileDetails extends State<Profile> {
+class Details extends State<DetailsPage> {
   User u;
-
-  ProfileDetails(this.u);
+ List<String> review;
+  Details(this.u,this.review);
 
   Future<bool> _onWillPop() {
     return showDialog(
@@ -43,10 +45,10 @@ class ProfileDetails extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
             appBar: AppBar(title: Text('Tuition Hub')),
             body: Container(
-                alignment: Alignment.topLeft,
+                alignment: Alignment.center,
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
@@ -66,12 +68,30 @@ class ProfileDetails extends State<Profile> {
                       stylishText('Mobile Number : ${u.mobile}', 15.0),
                       stylishText('Area : ${u.area}', 15.0),
                       stylishText('Detailed Address : ${u.address}', 15.0),
-                      editbutton()
+                      stylishText("Reviews", 30.0),
+                      getTextWidgets()
+                     
                     ],
                   ),
                 )));
   }
-
+ 
+  Widget getTextWidgets()
+  {
+    List<Widget> list = new List<Widget>();
+    print(review.length);
+     print("madari");
+    if(review.length==0){
+        list.add(stylishText("No Reviews for the tutor at the moment", 15.0));
+    }
+    else{
+    for(var i = 0; i < review.length; i++){
+        list.add(stylishText(review[i], 15.0));
+    }
+    }
+    return new Column(children: list);
+    
+  }
   Widget stylishText(text, size) {
     return Text(
       text,
@@ -150,39 +170,5 @@ class ProfileDetails extends State<Profile> {
       'Detailed Address : ${u.address}',
       style: new TextStyle(fontSize: 15, color: Colors.black),
     ));
-  }
-   Widget editbutton() {
-    return InkWell(
-      onTap: () {
-        var router = new MaterialPageRoute(
-                  builder: (BuildContext context) => new EditProfile(u));
-              Navigator.of(context).push(router);
-      },
-      child: Container(
-        width: 100,
-        height: 40,
-        decoration: BoxDecoration(
-          color: Colors.blue,
-          borderRadius: BorderRadius.circular(30.0),
-          boxShadow: [
-            //BoxShadow(color: Colors.grey, offset: Offset(1, 2)),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Edit',
-              style: TextStyle(
-                  color: Colors.white, fontSize: 15.0, fontFamily: 'Merienda'),
-            ),
-            SizedBox(
-              width: 0.0,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

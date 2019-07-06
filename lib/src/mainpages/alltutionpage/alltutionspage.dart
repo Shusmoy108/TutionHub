@@ -3,9 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import '../../models/tution.dart';
 import '../../models/user.dart';
 import '../addtutionpage/addtutionform.dart';
-import '../mytutionpage/mytutionpage.dart';
-import '../notificationpage/notifications.dart';
-import '../profilepage/profile.dart';
+
 import 'tutions.dart';
 
 class AllTutionPage extends StatefulWidget {
@@ -21,6 +19,7 @@ class AllTutionPage extends StatefulWidget {
 class AllTutionPageState extends State<AllTutionPage> {
   User u;
   AllTutionPageState(this.u);
+  String text="";
   final FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference databaseReference;
 
@@ -29,6 +28,9 @@ class AllTutionPageState extends State<AllTutionPage> {
     setState(() {
       super.initState();
       databaseReference = database.reference().child("tutions");
+     if(u.etuition=="Yes"){
+        text="Emergency Tuition Mood";
+     }
     });
   }
 
@@ -80,9 +82,9 @@ class AllTutionPageState extends State<AllTutionPage> {
           tution.uid = value['uid'];
           tution.uname = value['uname'];
           tution.uemail = value['uemail'];
-          if (tution.status != "booked") {
+         // if (tution.status != "booked") {
             _tutions.add(tution);
-          }
+          //}
         }
         int i = 0;
         for (var key in snapshot.value.keys) {
@@ -93,6 +95,16 @@ class AllTutionPageState extends State<AllTutionPage> {
         _tutions = [];
       }
     });
+    int i=0;
+    //similarity search
+    for(int j=0;j<_tutions.length;j++){
+      if(u.area.contains(_tutions[j].area)){
+        Tution tx=_tutions[j];
+        _tutions[j]=_tutions[i];
+        _tutions[i]=tx;
+        i++;
+      }
+    }
     return _tutions;
   }
 
@@ -101,74 +113,65 @@ class AllTutionPageState extends State<AllTutionPage> {
         builder: (BuildContext context) => new AddTution(u));
     Navigator.of(context).push(router);
   }
-
+  void emergencymood(){
+    if(u.etuition=='No'){
+     databaseReference = database.reference().child("users/${u.uid}");
+    databaseReference
+        .update({'etuition': 'Yes'});
+    print("done");
+    u.etuition="Yes";
+    }
+    else{
+       databaseReference = database.reference().child("users/${u.uid}");
+    databaseReference
+        .update({'etuition': 'No'});
+    print("done");
+    u.etuition="No";
+    }
+     var router = new MaterialPageRoute(
+                  builder: (BuildContext context) => new AllTutionPage(u));
+              Navigator.of(context).pushReplacement(router);
+  }
+  Widget floatButton(){
+    if(u.etuition=='No'){
+    return FloatingActionButton.extended(
+            onPressed: () {
+              // var router = new MaterialPageRoute(
+              //     builder: (BuildContext context) => new AddTution(u));
+              // Navigator.of(context).push(router);
+              emergencymood();
+            },
+            label: Text(
+              'Activate Emergency Tuition Mood',
+            ),
+            icon: Icon(Icons.label_important),
+            backgroundColor: Color.fromRGBO(80,200,10, 0.7),
+          );
+    }
+    else{
+     
+        
+      return FloatingActionButton.extended(
+            onPressed: () {
+              // var router = new MaterialPageRoute(
+              //     builder: (BuildContext context) => new AddTution(u));
+              // Navigator.of(context).push(router);
+              emergencymood();
+            },
+            label: Text(
+              'DeActivate Emergency Tuition Mood',
+            ),
+            icon: Icon(Icons.close),
+            backgroundColor: Color.fromRGBO(220, 20, 60, 0.8),
+          );
+    
+    }
+      
+  }
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: _onWillPop,
-        child: Scaffold(
-          appBar: AppBar(title: Text('Tuition Hub')),
-          drawer: Drawer(
-            child: ListView(
-              children: <Widget>[
-                UserAccountsDrawerHeader(
-                  accountName: Text(u.username),
-                  accountEmail: Text(u.email),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundColor:
-                        Theme.of(context).platform == TargetPlatform.iOS
-                            ? Colors.blue
-                            : Colors.white,
-                    child: Text(
-                      u.username.substring(0, 1),
-                      style: TextStyle(fontSize: 40.0),
-                    ),
-                  ),
-                ),
-                ListTile(
-                  title: Text("Profile"),
-                  trailing: Icon(Icons.person),
-                  onTap: () {
-                    var router = new MaterialPageRoute(
-                        builder: (BuildContext context) => new Profile(u));
-                    Navigator.of(context).pushReplacement(router);
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    "Tutions",
-                    style: new TextStyle(color: Colors.blueAccent),
-                  ),
-                  trailing: Icon(Icons.group_work),
-                  onTap: () {
-                    var router = new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            new AllTutionPage(u));
-                    Navigator.of(context).pushReplacement(router);
-                  },
-                ),
-                ListTile(
-                  title: Text("My Tutions"),
-                  trailing: Icon(Icons.subject),
-                  onTap: () {
-                    var router = new MaterialPageRoute(
-                        builder: (BuildContext context) => new MyTutionPage(u));
-                    Navigator.of(context).pushReplacement(router);
-                  },
-                ),
-                ListTile(
-                  title: Text("Notifications"),
-                  trailing: Icon(Icons.notifications),
-                  onTap: () {
-                    var router = new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            new Notifications(u));
-                    Navigator.of(context).pushReplacement(router);
-                  },
-                ),
-              ],
-            ),
-          ),
+    return Scaffold(
+          appBar: AppBar(title: Text(text)),
           body: Container(
               color: Color.fromRGBO(234, 239, 241, 1.0),
               //margin: EdgeInsets.all(10.0),
@@ -186,19 +189,9 @@ class AllTutionPageState extends State<AllTutionPage> {
                     return Tutions(snapshot.data, u);
                   }
                 },
+                
               )),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              var router = new MaterialPageRoute(
-                  builder: (BuildContext context) => new AddTution(u));
-              Navigator.of(context).push(router);
-            },
-            label: Text(
-              'Add Tution',
-            ),
-            icon: Icon(Icons.add),
-            backgroundColor: Color.fromRGBO(220, 20, 60, 0.8),
-          ),
-        ));
+          floatingActionButton: floatButton()
+        );
   }
 }

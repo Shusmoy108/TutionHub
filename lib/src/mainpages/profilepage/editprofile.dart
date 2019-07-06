@@ -1,59 +1,44 @@
+import 'package:TuitionHub/src/mainpages/profilepage/profile.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter_multiselect/flutter_multiselect.dart';
 import '../../models/user.dart';
-import 'loginpage.dart';
 
-class SignUp extends StatelessWidget {
-  // This widget is the root of your application.
+
+
+
+class EditProfile extends StatefulWidget {
+  User u;
+  EditProfile(this.u);
   @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Sign Up',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: new SignUpPage(),
-    );
-  }
+ EditProfileState createState() => new EditProfileState(u);
 }
 
-class SignUpPage extends StatefulWidget {
-  @override
-  _SignUpState createState() => new _SignUpState();
-}
-
-class _SignUpState extends State<SignUpPage> {
+class EditProfileState extends State<EditProfile> {
   User user;
+  EditProfileState(this.user);
   final FirebaseDatabase database = FirebaseDatabase.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   DatabaseReference databaseReference;
   int genderValue;
   String gender, _error = "";
-  bool uVal = false;
-  bool shahVal = false;
-  bool aVal = false;
-  bool mVal = false;
-  bool komVal = false;
-  bool khilVal = false;
-  bool gVal = false;
-  bool bVal = false;
-  bool cVal = false;
-  bool pdVal = true;
-  bool jVal = false;
-  bool nVal = false;
-  bool shayVal = false;
-  bool mohVal = false;
-  bool mirVal = false;
+  
 
   @override
   void initState() {
     setState(() {
       super.initState();
-      genderValue = 0;
-      gender = "Male";
-      user = User("", "", "", [], "", "", "", "", "", "5", "1",[]);
-      user.notification = [];
+      gender=user.gender;
+      print(user.gender);
+     if(user.gender=='Male'){
+       
+       genderValue=1;
+     }
+     else{
+       genderValue=0;
+     }
+  
       databaseReference = database.reference().child("users");
     });
 
@@ -72,7 +57,21 @@ class _SignUpState extends State<SignUpPage> {
       }
     });
   }
-
+  void edit(){
+      databaseReference = database.reference().child("users/${user.uid}");
+      databaseReference.update({
+          "username": user.username,
+      "password": user.password,
+      "gender": user.gender,
+      "institution": user.institution,
+      "department": user.department,
+      "area": user.area,
+      "address": user.address,
+      "mobile": user.mobile,
+      "subject":user.subject,
+     
+      });
+  }
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -194,7 +193,7 @@ class _SignUpState extends State<SignUpPage> {
         valueField: 'value',
         filterable: true,
         required: true,
-        value: null,
+        value: user.area,
         onSaved: (value) {
           user.area = value;
         });
@@ -268,7 +267,7 @@ Widget subjectField() {
         valueField: 'value',
         filterable: true,
         required: true,
-        value: null,
+        value: user.subject[0],
         onSaved: (value) {
           user.subject = value;
         });
@@ -277,6 +276,8 @@ Widget subjectField() {
   Widget emailField() {
     return new TextFormField(
       decoration: InputDecoration(labelText: "Email"),
+      initialValue: user.email,
+      enabled: false,
       onSaved: (val) => user.email = val,
       validator: (String value) {
         if (!value.contains("@")) {
@@ -289,6 +290,7 @@ Widget subjectField() {
   Widget passwordField() {
     return new TextFormField(
         decoration: InputDecoration(labelText: "Password"),
+         initialValue: user.password,
         onSaved: (val) => user.password = val,
         validator: (String value) {
           if (value.length <= 4) {
@@ -300,6 +302,7 @@ Widget subjectField() {
   Widget usernameField() {
     return new TextFormField(
         decoration: InputDecoration(labelText: "Username"),
+         initialValue: user.username,
         onSaved: (val) => user.username = val,
         validator: (String value) {
           if (value == "") {
@@ -311,6 +314,7 @@ Widget subjectField() {
   Widget institutionField() {
     return new TextFormField(
         decoration: InputDecoration(labelText: "Institution Name"),
+         initialValue: user.institution,
         onSaved: (val) => user.institution = val,
         validator: (String value) {
           if (value == "") {
@@ -322,6 +326,7 @@ Widget subjectField() {
   Widget departmentField() {
     return new TextFormField(
         decoration: InputDecoration(labelText: "Department"),
+         initialValue: user.department,
         onSaved: (val) => user.department = val,
         validator: (String value) {
           if (value == "") {
@@ -333,6 +338,7 @@ Widget subjectField() {
   Widget mobileField() {
     return new TextFormField(
         decoration: InputDecoration(labelText: "Mobile"),
+         initialValue: user.mobile,
         onSaved: (val) => user.mobile = val,
         validator: (String value) {
           if (!isNumeric(value) && value.length == 11) {
@@ -368,6 +374,7 @@ Widget subjectField() {
   Widget addressField() {
     return new TextFormField(
         decoration: InputDecoration(labelText: "Detail Address"),
+         initialValue: user.address,
         onSaved: (val) => user.address = val,
         validator: (String value) {
           if (value == "") {
@@ -379,44 +386,16 @@ Widget subjectField() {
   Widget submitButton() {
     return RaisedButton(
       color: Colors.blue,
-      child: Text("Sign Up"),
+      child: Text("Edit Profile"),
       onPressed: () {
         if (formKey.currentState.validate()) {
           user.gender = gender;
-          user.notification = [];
           formKey.currentState.save();
-          databaseReference
-              .orderByChild("email")
-              .equalTo(user.email)
-              .once()
-              .then((onValue) {
-            if (onValue.value == null) {
-              setState(() {
-                _error = "";
-              });
-              formKey.currentState.reset();
-
-              //save form data to the database
-              databaseReference.push().set(user.toJson());
-              var router = new MaterialPageRoute(
-                  builder: (BuildContext context) => new LoginPage());
-              Navigator.of(context).push(router);
-            } else {
-              setState(() {
-                _error = "Email is already exist";
-              });
-            }
-          }).catchError((onError) {
-            setState(() {
-              _error = "";
-            });
-            formKey.currentState.reset();
-            //save form data to the database
-            databaseReference.push().set(user.toJson());
-            var router = new MaterialPageRoute(
-                builder: (BuildContext context) => new LoginPage());
-            Navigator.of(context).pushReplacement(router);
-          });
+          edit();
+           var router = new MaterialPageRoute(
+                  builder: (BuildContext context) => new Profile(user));
+              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacement(router);
         }
       },
     );

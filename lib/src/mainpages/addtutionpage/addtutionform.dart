@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import '../../models/tution.dart';
 import '../../models/user.dart';
+import 'package:flutter_multiselect/flutter_multiselect.dart';
 import '../alltutionpage/alltutionspage.dart';
 
 class AddTution extends StatelessWidget {
@@ -76,7 +77,7 @@ class _AddTutionPageState extends State<AddTutionPage> {
       super.initState();
       _selectedClass = 'Class 1';
       _selectedArea = 'Shahbag';
-      tution = Tution("", "", "", "", "", "", "");
+      tution = Tution("", [], "", "", "", "", "");
       databaseReference = database.reference().child("tutions");
     });
 
@@ -146,15 +147,80 @@ class _AddTutionPageState extends State<AddTutionPage> {
   }
 
   Widget subjectField() {
-    return new TextFormField(
-        decoration: InputDecoration(labelText: "Subject"),
-        onSaved: (val) => tution.subject = val,
-        validator: (String value) {
-          if (value == "") {
-            return "Subject is required";
+    return new MultiSelect(
+        autovalidate: true,
+        titleText: "Subject",
+        validator: (value) {
+          if (value == null) {
+            return 'Please select one or more subject(s)';
           }
+        },
+        errorText: 'Please select one or more subject(s)',
+        dataSource: [
+          {
+            "display": "Bangla",
+            "value": "Bangla",
+          },
+          {
+            "display": "English",
+            "value": "English",
+          },
+          {
+            "display": "Mathematics",
+            "value": "Mathematics",
+          },
+          {
+            "display": "Physics",
+            "value": "Physics",
+          },
+          {
+            "display": "Chemistry",
+            "value": "Chemistry",
+          },
+          {
+            "display": "All Science Subject",
+            "value": "All Science Subject",
+          },
+          {
+            "display": "All Subject",
+            "value": "All Subject",
+          },
+          {
+            "display": "All Business Studies Subject",
+            "value": "All Business Studies Subject",
+          },
+          {
+            "display": "Economics",
+            "value": "Economics",
+          },
+          {
+            "display": "Accounting",
+            "value": "Accounting",
+          },
+          {
+            "display": "Business Organization and Management",
+            "value": "Business Organization and Management",
+          },
+          {
+            "display": "Finance, Banking, and Insurance",
+            "value": "Finance, Banking, and Insurance",
+          },
+          {
+            "display": "Information and Communication Technology",
+            "value": "Information and Communication Technology",
+          },
+         
+        ],
+        textField: 'display',
+        valueField: 'value',
+        filterable: true,
+        required: true,
+        value: null,
+        onSaved: (value) {
+          tution.subject = value;
         });
   }
+
 
   Widget classField() {
     return new ListTile(

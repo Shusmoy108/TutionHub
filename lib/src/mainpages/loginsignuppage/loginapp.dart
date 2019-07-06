@@ -154,7 +154,8 @@ class LogInState extends State<LogIn> {
               value["password"],
               value["email"],
               value["rating"],
-              value["number"]);
+              value["number"],
+              value["subject"]);
           print(value);
           // String x = value["number"];
           // u.number = int.parse(x);

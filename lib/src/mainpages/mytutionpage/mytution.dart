@@ -1,4 +1,5 @@
 import 'package:TuitionHub/src/mainpages/mytutionpage/complainbox.dart';
+import 'package:TuitionHub/src/mainpages/mytutionpage/recomendation.dart';
 import 'package:TuitionHub/src/models/complain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,8 @@ class MyTution extends StatelessWidget {
               value["password"],
               value["email"],
               value["rating"],
-              value["number"]);
+              value["number"],
+              value["subject"]);
           users.add(us);
         }
       }).catchError((onError) {});
@@ -260,6 +262,10 @@ class MyTution extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(bottom: 5),
           ),
+          recomendationbutton(index, context),
+          Padding(
+            padding: EdgeInsets.only(bottom: 5),
+          ), 
           seeintbutton(index, context),
           Padding(
             padding: EdgeInsets.only(bottom: 5),
@@ -307,7 +313,40 @@ class MyTution extends StatelessWidget {
       ),
     );
   }
-
+Widget recomendationbutton(index, context) {
+    return InkWell(
+      onTap: () {
+        var router = new MaterialPageRoute(
+            builder: (BuildContext context) => new RecomendationPage(
+                  u,
+                  tutions[index],
+                ));
+        Navigator.of(context).push(router);
+      },
+      child: Container(
+        width: 200,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(30.0),
+          boxShadow: [
+            //BoxShadow(color: Colors.grey, offset: Offset(1, 2)),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'See Recomendations',
+              style: TextStyle(
+                  color: Colors.white, fontSize: 15.0, fontFamily: 'Merienda'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
   Widget unbookbutton(index, context) {
     return InkWell(
       onTap: () {

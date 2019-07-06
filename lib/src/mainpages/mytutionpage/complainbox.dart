@@ -109,13 +109,14 @@ class MyDialogState extends State<MyDialog> {
             value["password"],
             value["email"],
             value["rating"],
-            value["number"]);
-        print(value);
+            value["number"],
+            value["subject"]);
+        //print(value);
         // String x = value["number"];
         // u.number = int.parse(x);
         // // u.rating = value["rating"];
-        print(u.number);
-        print(u.rating);
+        //print(u.number);
+        //print(u.rating);
         for (var key in onValue.value.keys) {
           u.uid = key;
 

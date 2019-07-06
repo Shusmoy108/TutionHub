@@ -9,12 +9,15 @@ class User {
   String uid;
   var area = [];
   var notification = [];
+  var subject=[];
   String address;
   String mobile;
   String password;
   String email;
   String rating;
   String number;
+  String etuition='No';
+  String f='x';
 
   User(
       this.username,
@@ -27,7 +30,8 @@ class User {
       this.password,
       this.email,
       this.rating,
-      this.number);
+      this.number,
+      this.subject);
 
   User.fromSnapshot(DataSnapshot snapshot)
       : key = snapshot.key,
@@ -42,6 +46,7 @@ class User {
         email = snapshot.value["email"],
         rating = snapshot.value["rating"],
         number = snapshot.value["number"],
+        subject = snapshot.value["subject"],
         notification = snapshot.value["notification"];
   toJson() {
     return {
@@ -56,7 +61,9 @@ class User {
       "email": email,
       "notification": notification,
       "rating": rating,
-      "number": number
+      "subject":subject,
+      "number": number,
+      "etuition":etuition,
     };
   }
 }

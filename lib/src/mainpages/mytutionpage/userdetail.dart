@@ -1,3 +1,4 @@
+import 'package:TuitionHub/src/mainpages/mytutionpage/detailspage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -112,7 +113,30 @@ class UserDetails extends StatelessWidget {
       _showDialog(context);
     }
   }
+  Future<List<String>> getreviews(User tutor,context) async{
+    List<String> review=List();
+      databaseReference = database.reference().child("complains");
+     await databaseReference
+        .orderByChild("tutorid")
+        .equalTo(tutor.uid)
+        .once()
+        .then((onValue) {
+         
+           if (onValue.value != null) {
+        for (var value in onValue.value.values) {
+          review.add(value['complain']);
+        }
+           }
+           else{
+             review=[];
+           }
 
+        });
+         var router = new MaterialPageRoute(
+              builder: (BuildContext context) => new DetailsPage(tutor,review));
+              Navigator.of(context).push(router);
+     return review;
+  }
   Widget callbutton(index) {
     return InkWell(
       onTap: () {
@@ -135,6 +159,36 @@ class UserDetails extends StatelessWidget {
           children: <Widget>[
             Text(
               'Call',
+              style: TextStyle(
+                  color: Colors.white, fontSize: 15.0, fontFamily: 'Merienda'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+   Widget detailsbutton(index,context) {
+    return InkWell(
+      onTap: () {
+     getreviews(users[index],context);
+      
+      },
+      child: Container(
+        width: 80,
+        height: 40,
+        decoration: BoxDecoration(
+         color: Color.fromRGBO(220, 20, 60, 0.8),
+          borderRadius: BorderRadius.circular(30.0),
+          boxShadow: [
+            //BoxShadow(color: Colors.grey, offset: Offset(1, 2)),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Details',
               style: TextStyle(
                   color: Colors.white, fontSize: 15.0, fontFamily: 'Merienda'),
             ),
@@ -185,7 +239,7 @@ class UserDetails extends StatelessWidget {
       ),
     );
   }
-
+ 
   Widget _buildProductItem(BuildContext context, int index) {
     return Container(
       color: Color.fromRGBO(234, 239, 241, 1.0),
@@ -199,11 +253,15 @@ class UserDetails extends StatelessWidget {
           Row(
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(left: 70),
+                padding: EdgeInsets.only(left: 20),
               ),
               callbutton(index),
+               Padding(
+                padding: EdgeInsets.only(left: 20),
+              ),
+              detailsbutton(index,context),
               Padding(
-                padding: EdgeInsets.only(left: 50),
+                padding: EdgeInsets.only(left: 20),
               ),
               bookbutton(index, context)
             ],
