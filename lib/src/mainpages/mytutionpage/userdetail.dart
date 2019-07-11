@@ -1,4 +1,5 @@
 import 'package:TuitionHub/src/mainpages/mytutionpage/detailspage.dart';
+import 'package:TuitionHub/src/models/complain.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -113,8 +114,8 @@ class UserDetails extends StatelessWidget {
       _showDialog(context);
     }
   }
-  Future<List<String>> getreviews(User tutor,context) async{
-    List<String> review=List();
+  Future<List<Complain>> getreviews(User tutor,context) async{
+    List<Complain> review=List();
       databaseReference = database.reference().child("complains");
      await databaseReference
         .orderByChild("tutorid")
@@ -124,7 +125,8 @@ class UserDetails extends StatelessWidget {
          
            if (onValue.value != null) {
         for (var value in onValue.value.values) {
-          review.add(value['complain']);
+          Complain c= new Complain(value['complain'], value["tutorname"], value["tutoremail"], value["tutorid"], value["uid"], value["tutionid"], value["uname"], value["rating"], value["time"], value["uemail"]);
+          review.add(c);
         }
            }
            else{

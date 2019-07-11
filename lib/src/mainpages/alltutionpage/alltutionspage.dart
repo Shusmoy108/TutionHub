@@ -31,6 +31,7 @@ class AllTutionPageState extends State<AllTutionPage> {
      if(u.etuition=="Yes"){
         text="Emergency Tuition Mood";
      }
+     appBarTitle = new Text(text);
     });
   }
 
@@ -168,10 +169,40 @@ class AllTutionPageState extends State<AllTutionPage> {
     }
       
   }
+  Widget appBarTitle;
+  Icon actionIcon = new Icon(Icons.search);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: AppBar(title: Text(text)),
+          appBar: AppBar(
+             centerTitle: true,
+        title:appBarTitle,
+        actions: <Widget>[
+          // new IconButton(icon: actionIcon,onPressed:(){
+          // setState(() {
+          //            if ( this.actionIcon.icon == Icons.search){
+          //             this.actionIcon = new Icon(Icons.close);
+          //             this.appBarTitle = new TextField(
+          //               style: new TextStyle(
+          //                 color: Colors.white,
+
+          //               ),
+          //               decoration: new InputDecoration(
+          //                 prefixIcon: new Icon(Icons.search,color: Colors.white),
+          //                 hintText: "Search...",
+          //                 hintStyle: new TextStyle(color: Colors.white)
+          //               ),
+          //             );}
+          //             else {
+          //               this.actionIcon = new Icon(Icons.search);
+          //               this.appBarTitle = new Text("AppBar Title");
+          //             }
+
+
+          //           })
+          //           ;}
+          //           )
+                    ]),
           body: Container(
               color: Color.fromRGBO(234, 239, 241, 1.0),
               //margin: EdgeInsets.all(10.0),

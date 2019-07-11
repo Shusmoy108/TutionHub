@@ -1,6 +1,6 @@
 
 import 'package:TuitionHub/src/mainpages/mytutionpage/mytutionpage.dart';
-import 'package:TuitionHub/src/mainpages/profilepage/profile.dart';
+import 'package:TuitionHub/src/mainpages/profilepage/profilepage.dart';
 import 'package:flutter/material.dart';
 import '../notificationpage/notifications.dart';
 import '../../models/user.dart';

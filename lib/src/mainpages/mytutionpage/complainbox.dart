@@ -80,7 +80,7 @@ class MyDialogState extends State<MyDialog> {
     }
     tution.status = 'unbooked';
     Complain com = Complain(complain, tution.tutorname, tution.tutoremail,
-        tution.tutorid, tution.uid, tution.tid);
+        tution.tutorid, tution.uid, tution.tid,tution.uname,rating.toString(),now,tution.uemail);
 
     databaseReference = database
         .reference()

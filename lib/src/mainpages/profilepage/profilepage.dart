@@ -1,31 +1,26 @@
-import 'package:TuitionHub/src/models/complain.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
+import 'package:TuitionHub/src/mainpages/profilepage/editprofile.dart';
 import '../../models/user.dart';
 import '../alltutionpage/alltutionspage.dart';
 import '../mytutionpage/mytutionpage.dart';
 import '../notificationpage/notifications.dart';
-import '../profilepage/profile.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
-class DetailsPage extends StatefulWidget {
+class Profile extends StatefulWidget {
   User u;
-   List<Complain> review;
-  DetailsPage(this.u,this.review);
+  Profile(this.u);
   @override
   State<StatefulWidget> createState() {
-    return Details(u,review);
+    return ProfilePage(u);
   }
 }
+class ProfilePage extends State<Profile> {
+    User u;
 
-class Details extends State<DetailsPage> {
-  User u;
- List<Complain> review;
-  Details(this.u,this.review);
+  ProfilePage(this.u);
 
- 
   @override
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
         children: <Widget>[
@@ -63,7 +58,7 @@ Widget build(BuildContext context) {
               //     onPressed: () {
               //       Navigator.of(context).push(
               //         MaterialPageRoute(
-              //           //builder: (context) => ProfileEditPage(),
+              //           builder: (context) => EditProfile(u),
               //         ),
               //       );
               //     },
@@ -98,7 +93,7 @@ Widget build(BuildContext context) {
                       height: 4.0,
                     ),
                     Text(
-                      u.gender,
+                      u.address,
                       style: TextStyle(
                         color: Colors.white54,
                         fontSize: 13.0,
@@ -110,7 +105,7 @@ Widget build(BuildContext context) {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                          SmoothStarRating(
+                         SmoothStarRating(
                         allowHalfRating: false,
                         starCount: 5,
                         rating: double.parse(u.rating),
@@ -123,40 +118,46 @@ Widget build(BuildContext context) {
                   ],
                 ),
               ),
-              // Positioned(
-              //   top: MediaQuery.of(context).size.height * 0.6 - 27,
-              //   left: MediaQuery.of(context).size.width * 0.5 - 60,
-              //   child: ClipRRect(
-              //     borderRadius: BorderRadius.circular(50.0),
-              //     child: MaterialButton(
-              //       onPressed: () {},
-              //       minWidth: 120.0,
-              //       height: 35.0,
-              //       color: Colors.greenAccent,
-              //       textColor: Colors.black87,
-              //       child: Text(
-              //         'HIRE ME',
-              //         style: TextStyle(
-              //           letterSpacing: 1.5,
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
+              Positioned(
+                top: MediaQuery.of(context).size.height * 0.6 - 27,
+                left: MediaQuery.of(context).size.width * 0.5 - 60,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50.0),
+                  child: MaterialButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => EditProfile(u),
+                      ),
+                    );
+                    },
+                    minWidth: 120.0,
+                    height: 35.0,
+                    color: Colors.greenAccent,
+                    textColor: Colors.black87,
+                    child: Text(
+                      'Edit Profile',
+                      style: TextStyle(
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-          // Container(
-          //   padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-          //   child: Text(
-          //       u.gender, 
-          //       style: TextStyle(
-          //       fontSize: 13.0,
-          //       fontStyle: FontStyle.italic,
-          //       color: Colors.black54,
-          //     ),
-          //     textAlign: TextAlign.center,
-          //   ),
-          // ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+            child: Text(
+              u.gender,
+              style: TextStyle(
+                fontSize: 13.0,
+                fontStyle: FontStyle.italic,
+                color: Colors.black54,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
           Container(
             padding: EdgeInsets.fromLTRB(20.0, 30.0, 20.0, 10.0),
             child: Column(
@@ -206,7 +207,7 @@ Widget build(BuildContext context) {
                       ),
                     ),
                     Text(
-                     u.mobile,
+                      u.mobile,
                       style: TextStyle(
                         fontSize: 13,
                         color: Color.fromRGBO(0, 0, 0, 0.8),
@@ -306,7 +307,7 @@ Widget build(BuildContext context) {
                 ),
                 Container(
                   child: Text(
-                    'Studies CSE in Bangladesh University of Engineering & Technology',
+                    'Studies ${u.department} in ${u.institution}',
                     style: TextStyle(
                       fontSize: 13.0,
                       color: Color.fromRGBO(0, 0, 0, 0.7),
@@ -336,7 +337,7 @@ Widget build(BuildContext context) {
                           width: 5.0,
                         ),
                         Text(
-                          'RATINGS & REVIEWS',
+                          'PREFERED AREA AND SUBJECT',
                           style: TextStyle(
                             letterSpacing: 1.2,
                             color: Color.fromRGBO(0, 0, 0, 0.7),
@@ -353,7 +354,33 @@ Widget build(BuildContext context) {
                       ),
                     ),
                   ),
-                  getTextWidgets(),
+          
+                 SizedBox(
+                  height: 10.0,
+                ),
+                Container(
+                  child: Text(
+                    "Area: ${u.area}",
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      color: Color.fromRGBO(0, 0, 0, 0.7),
+                      wordSpacing: 1.0,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Container(
+                  child: Text(
+                    "Subjects: ${u.subject}",
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      color: Color.fromRGBO(0, 0, 0, 0.7),
+                      wordSpacing: 1.0,
+                    ),
+                  ),
+                ),
                 ],
               ),
             ),
@@ -361,146 +388,5 @@ Widget build(BuildContext context) {
         ],
       ),
     );
-  }
-  Widget stylishText(text, size) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: size,
-        //fontWeight: FontWeight.bold,
-        color: Colors.black87,
-        fontFamily: 'Merienda',
-      ),
-    );
-  }
-
- Widget getTextWidgets()
-  {
-    List<Widget> list = new List<Widget>();
-    print(review.length);
-     print("madari");
-    if(review.length==0){
-        list.add(stylishText("No Reviews for the tutor at the moment", 15.0));
-    }
-    else{
-    for(var i = 0; i < review.length; i++){
-        list.add( Card(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                       
-                        Container(
-                          padding: EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 7.0),
-                          child: Text(
-                            review[i].uname,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13.0,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 10.0),
-                          child: Row(
-                            children: <Widget>[
-                               SmoothStarRating(
-                        allowHalfRating: false,
-                        starCount: 5,
-                        rating: double.parse(review[i].rating),
-                        size: 11.0,
-                        color: Colors.green,
-                        borderColor: Colors.green,
-                      ),
-                            
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 20.0),
-                          child: Text(
-                            review[i].complain,
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              fontStyle: FontStyle.italic,
-                              color: Color.fromRGBO(0, 0, 0, 0.7),
-                              wordSpacing: 1.0,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),);
-    }
-    }
-    return new Column(children: list);
-    
-  }
- 
-  Widget userField() {
-    return ListTile(title: Text("hello"));
-  }
-
-  Widget nameField() {
-    return ListTile(
-        title: Text(
-      'Name : ${u.username}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget emailField() {
-    return ListTile(
-        title: Text(
-      'Email : ${u.email}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget insititutionField() {
-    return ListTile(
-        title: Text(
-      'Institution : ${u.institution}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget departmentField() {
-    return ListTile(
-        title: Text(
-      'Department : ${u.department}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget genderField() {
-    return ListTile(
-        title: Text(
-      'Gender : ${u.gender}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget mobileField() {
-    return ListTile(
-        title: Text(
-      'Mobile Number : ${u.mobile}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget areaField() {
-    return ListTile(
-        title: Text(
-      'Area : ${u.area}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
-  }
-
-  Widget addressField() {
-    return ListTile(
-        title: Text(
-      'Detailed Address : ${u.address}',
-      style: new TextStyle(fontSize: 15, color: Colors.black),
-    ));
   }
 }
