@@ -290,11 +290,11 @@ class MyTution extends StatelessWidget {
         Navigator.of(context).push(router);
       },
       child: Container(
-        width: 200,
-        height: 40,
+        width: 80,
+        height: 30,
         decoration: BoxDecoration(
           color: Colors.blue,
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.circular(10.0),
           boxShadow: [
             //BoxShadow(color: Colors.grey, offset: Offset(1, 2)),
           ],
@@ -304,9 +304,9 @@ class MyTution extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              'See who are Interested',
+              'Interesteds',
               style: TextStyle(
-                  color: Colors.white, fontSize: 15.0, fontFamily: 'Merienda'),
+                  color: Colors.white, fontSize: 15.0, fontFamily: 'Arcon'),
             ),
           ],
         ),
@@ -324,11 +324,11 @@ Widget recomendationbutton(index, context) {
         Navigator.of(context).push(router);
       },
       child: Container(
-        width: 200,
-        height: 40,
+        width: 120,
+        height: 30,
         decoration: BoxDecoration(
           color: Colors.blue,
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.circular(10.0),
           boxShadow: [
             //BoxShadow(color: Colors.grey, offset: Offset(1, 2)),
           ],
@@ -338,34 +338,96 @@ Widget recomendationbutton(index, context) {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              'See Recomendations',
+              'Recomendations',
               style: TextStyle(
-                  color: Colors.white, fontSize: 15.0, fontFamily: 'Merienda'),
+                  color: Colors.white, fontSize: 15.0, fontFamily: 'Arcon'),
             ),
           ],
         ),
       ),
     );
   }
+   void _showDialogUnbooked(context,index) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Thank You"),
+          content: new Text(
+              "You have unbooked the tution from ${tutions[index].tutorname}(${tutions[index].tutoremail})."),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   Widget unbookbutton(index, context) {
     return InkWell(
       onTap: () {
         if (tutions[index].status == 'booked') {
-          var router = new MaterialPageRoute(
-              builder: (BuildContext context) => new MyDialog(tutions[index]));
-          Navigator.of(context).push(router);
+             int x = int.parse(tutions[index].unbooknumber) + 1;
+    databaseReference = database.reference().child("tutions/${tutions[index].tid}");
+    databaseReference
+        .update({'status': 'unbooked', 'unbooknumber': x.toString()});
+    int now = new DateTime.now().millisecondsSinceEpoch;
+    String n = '${tutions[index].uname}(${tutions[index].uemail}) has unbooked the tution';
+    Notice noti = Notice(n, now);
+    String ni =
+        'You have unbooked the tution from ${tutions[index].tutorname}(${tutions[index].tutoremail}).';
+    Notice not = Notice(ni, now);
+    databaseReference = database
+        .reference()
+        .child("users")
+        .child(tutions[index].uid)
+        .child('notification');
+    databaseReference.push().set(not.toJson());
+    for (var val in tutions[index].interested) {
+      databaseReference =
+          database.reference().child("users").child(val).child('notification');
+      databaseReference.push().set(noti.toJson());
+    }
+    tutions[index].status = 'unbooked';
+    //       Complain com = Complain("", tutions[index].tutorname, tutions[index].tutoremail,
+    //     tutions[index].tutorid, tutions[index].uid, tutions[index].tid,tutions[index].uname,"",0,tutions[index].uemail);
+    //     com.ratingtype="tutor";
+    // databaseReference = database
+    //     .reference()
+    //     .child("tutions")
+    //     .child(tutions[index].tid)
+    //     .child('complain');
+    // databaseReference.push().set(com.toJson());
+    // databaseReference = database.reference().child("complains");
+    // databaseReference.push().set(com.toJson());
+    //  Complain com1 = Complain("", tutions[index].uname,tutions[index].uemail,
+    //     tutions[index].uid,  tutions[index].tutorid,tutions[index].tid,tutions[index].tutorname,"",0, tutions[index].tutoremail);
+    //     com1.ratingtype="guardian";
+    //       databaseReference = database.reference().child("complains");
+    // databaseReference.push().set(com1.toJson());
+          // var router = new MaterialPageRoute(
+          //     builder: (BuildContext context) => new MyDialog(tutions[index]));
+          // Navigator.of(context).push(router);
           //_showDialog2(index, context);
           //bookTution(index, context);
+          _showDialogUnbooked(context,index);
         } else {
           _showDialog(context);
         }
       },
       child: Container(
-        width: 200,
-        height: 40,
+        width: 70,
+        height: 30,
         decoration: BoxDecoration(
           color: Colors.blue,
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.circular(10.0),
           boxShadow: [
             //BoxShadow(color: Colors.grey, offset: Offset(1, 2)),
           ],
@@ -375,9 +437,9 @@ Widget recomendationbutton(index, context) {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Unbook the tution',
+              'Unbook',
               style: TextStyle(
-                  color: Colors.white, fontSize: 15.0, fontFamily: 'Merienda'),
+                  color: Colors.white, fontSize: 15.0, fontFamily: 'Arcon'),
             ),
             SizedBox(
               width: 0.0,
@@ -387,11 +449,66 @@ Widget recomendationbutton(index, context) {
       ),
     );
   }
+    Widget stylishText(text, size) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: size,
+        //fontWeight: FontWeight.bold,
+        color: Colors.black87,
+        fontFamily: 'Merienda',
+      ),
+    );
+  }
+
+ Widget buildProductItem(BuildContext context, int index) {
+    return Container(
+      color: Colors.white,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.all(10),
+      child:Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  stylishText('Number Of Students : ${tutions[index].numberofstudent}', 11.0),   
+                  stylishText('Institution : ${tutions[index].institution}', 11.0),
+                  stylishText('Subject : ${tutions[index].subject}', 11.0),
+                  stylishText('Detailed Address : ${tutions[index].address}', 11.0),
+                      ],),
+              Padding(
+                padding: EdgeInsets.only(left: 50),
+                        ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  stylishText(tutions[index].cls, 11.0),
+                  stylishText('Salary : ${tutions[index].salary}', 11.0),
+                  stylishText('Area : ${tutions[index].area}', 11.0),
+                    ],),
+                    ],),
+          Padding(
+            padding: EdgeInsets.only(bottom: 5)),
+          Row(
+            children: <Widget>[
+              seeintbutton(index, context),
+              Padding(
+                padding: EdgeInsets.only(left: 50),),
+              recomendationbutton(index, context),
+                Padding(
+                padding: EdgeInsets.only(left: 50),),
+                unbookbutton(index, context)
+              ],)         
+              ],) 
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemBuilder: _buildProductItem,
+      itemBuilder: buildProductItem,
       itemCount: tutions.length,
     );
   }

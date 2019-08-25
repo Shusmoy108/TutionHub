@@ -30,7 +30,7 @@ class EditProfileState extends State<EditProfile> {
     setState(() {
       super.initState();
       gender=user.gender;
-      print(user.gender);
+ 
      if(user.gender=='Male'){
        
        genderValue=1;

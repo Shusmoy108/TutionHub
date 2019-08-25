@@ -1,6 +1,8 @@
 
+import 'package:TuitionHub/src/mainpages/feedbackpage/feedback.dart';
 import 'package:TuitionHub/src/mainpages/mytutionpage/mytutionpage.dart';
 import 'package:TuitionHub/src/mainpages/profilepage/profilepage.dart';
+import 'package:TuitionHub/src/mainpages/ratingpage/ratingpage.dart';
 import 'package:flutter/material.dart';
 import '../notificationpage/notifications.dart';
 import '../../models/user.dart';
@@ -52,7 +54,6 @@ _HomePageState(this.u);
             child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                     
                       SizedBox(
                         height: 10.0,
                       ),
@@ -78,6 +79,19 @@ _HomePageState(this.u);
                         width: 50.0,
                       ),
                          notibutton(),
+                      ],),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                       Row(children: <Widget>[
+                        SizedBox(
+                        width: 50.0,
+                      ),
+                        ratingbutton(),
+                          SizedBox(
+                        width: 50.0,
+                      ),
+                         feedbackbutton(),
                       ],),
                     ],
                   ),
@@ -113,6 +127,75 @@ _HomePageState(this.u);
           children: <Widget>[
             Text(
               'Profile',
+              style: TextStyle(
+                  color: Colors.black, fontSize: 15.0, fontFamily: 'Merienda'),
+            ),
+            SizedBox(
+              width: 0.0,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+   Widget ratingbutton() {
+    return InkWell(
+      onTap: () {
+        var router = new MaterialPageRoute(
+                  builder: (BuildContext context) => new RatingPage(u));
+              Navigator.of(context).push(router);
+      },
+      child: Container(
+        width: 120,
+        height: 100,
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(204, 243, 129, 1.0),
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            //BoxShadow(color: Colors.grey, offset: Offset(1, 2)),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Rating',
+              style: TextStyle(
+                  color: Colors.black, fontSize: 15.0, fontFamily: 'Merienda'),
+            ),
+            SizedBox(
+              width: 0.0,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+ Widget feedbackbutton() {
+    return InkWell(
+      onTap: () {
+        var router = new MaterialPageRoute(
+                  builder: (BuildContext context) => new FeedbackPage(u));
+              Navigator.of(context).push(router);
+      },
+      child: Container(
+        width: 120,
+        height: 100,
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(204, 243, 129, 1.0),
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            //BoxShadow(color: Colors.grey, offset: Offset(1, 2)),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Feedback',
               style: TextStyle(
                   color: Colors.black, fontSize: 15.0, fontFamily: 'Merienda'),
             ),

@@ -109,6 +109,23 @@ class UserDetails extends StatelessWidget {
           .child(t.uid)
           .child('notification');
       databaseReference.push().set(not.toJson());
+
+              Complain com = Complain("", t.tutorname, t.tutoremail,
+       t.tutorid, t.uid, t.tid,t.uname,"",0,t.uemail);
+        com.ratingtype="tutor";
+    databaseReference = database
+        .reference()
+        .child("tutions")
+        .child(t.tid)
+        .child('complain');
+    databaseReference.push().set(com.toJson());
+    databaseReference = database.reference().child("complains");
+    databaseReference.push().set(com.toJson());
+     Complain com1 = Complain("", t.uname,t.uemail,
+        t.uid, t.tutorid,t.tid,t.tutorname,"",0, t.tutoremail);
+        com1.ratingtype="guardian";
+          databaseReference = database.reference().child("complains");
+    databaseReference.push().set(com1.toJson());
       _showDialog2(context, ni);
     } else {
       _showDialog(context);
@@ -123,9 +140,11 @@ class UserDetails extends StatelessWidget {
         .once()
         .then((onValue) {
          
-           if (onValue.value != null) {
+          if (onValue.value != null) {
+
         for (var value in onValue.value.values) {
-          Complain c= new Complain(value['complain'], value["tutorname"], value["tutoremail"], value["tutorid"], value["uid"], value["tutionid"], value["uname"], value["rating"], value["time"], value["uemail"]);
+          Complain c= new Complain(value['complain'], value["tutorname"], value["tutoremail"], value["tutorid"], value["uid"], value["tutionid"], value["uname"], value["rating"], int.parse(value["time"]), value["uemail"]);
+          c.ratingtype=value["ratingtype"];
           review.add(c);
         }
            }
@@ -133,7 +152,10 @@ class UserDetails extends StatelessWidget {
              review=[];
            }
 
+        }).catchError((onError){
+
         });
+     
          var router = new MaterialPageRoute(
               builder: (BuildContext context) => new DetailsPage(tutor,review));
               Navigator.of(context).push(router);

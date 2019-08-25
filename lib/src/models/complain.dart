@@ -12,6 +12,8 @@ class Complain {
   String uname;
   String uemail;
   String rating;
+  String ratingtype;
+  String r="x";
   int time;
   Complain(this.complain, this.tutorname, this.tutoremail, this.tutorid,
       this.uid, this.tutionid,this.uname,this.rating,this.time,this.uemail);
@@ -32,6 +34,7 @@ class Complain {
         rating = snapshot.value["rating"],
         time = snapshot.value["time"],
         uemail = snapshot.value["uemail"],
+        ratingtype=snapshot.value["ratingtype"],
         tutionid = snapshot.value["tutionid"];
   toJson() {
     return {
@@ -44,6 +47,7 @@ class Complain {
       "time": time,
       "uname":uname,
       "uemail":uemail,
+      "ratingtype":ratingtype,
       "rating":rating
     };
   }

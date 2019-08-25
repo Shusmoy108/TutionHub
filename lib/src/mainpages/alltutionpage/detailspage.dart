@@ -377,13 +377,13 @@ Widget build(BuildContext context) {
  Widget getTextWidgets()
   {
     List<Widget> list = new List<Widget>();
- 
+   
     if(review.length==0){
         list.add(stylishText("No Reviews for the tutor at the moment", 15.0));
     }
     else{
     for(var i = 0; i < review.length; i++){
-    
+ 
       if(review[i].ratingtype=="tutor")
       {
         list.add( Card(

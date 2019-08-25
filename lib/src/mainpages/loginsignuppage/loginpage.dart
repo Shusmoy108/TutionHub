@@ -1,4 +1,5 @@
 import 'package:TuitionHub/src/mainpages/homepage/homepage.dart';
+import 'package:TuitionHub/src/mainpages/homepage/mainpage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -75,28 +76,23 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               value["number"],
               value["subject"]);
               u.etuition=value["etuition"];
-          //print(value);
-          // String x = value["number"];
-          // u.number = int.parse(x);
-          // // u.rating = value["rating"];
-         // print(u.number);
-         // print(u.rating);
+         
           for (var key in onValue.value.keys) {
             u.uid = key;
           }
           saveAuthData(true, u);
           var router = new MaterialPageRoute(
-              builder: (BuildContext context) => new HomePage(u));
+              builder: (BuildContext context) => new MainPage(u.email));
           Navigator.of(context).pushReplacement(router);
         } else {
-          print("fdds");
+       
           setState(() {
             _error = "Incorrect Email or Password";
           });
         }
       }
     }).catchError((onError) {
-      print(onError);
+
       setState(() {
         _error = "Incorrect Email or Password";
       });

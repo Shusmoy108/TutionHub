@@ -58,9 +58,7 @@ class Recomendations extends State<RecomendationPage> {
                 us.f='y';
               }
             }
-            print(us.subject);
-            print(tution.subject);
-            print(us.subject.contains(tution.subject));
+       
             //us.f='y';
           }
           users.add(us);

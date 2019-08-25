@@ -8,28 +8,29 @@ import '../../models/notice.dart';
 import '../../models/user.dart';
 
 class MyDialog extends StatefulWidget {
-  Tution tution;
-  MyDialog(this.tution);
+  
+  Complain complain;
+  MyDialog(this.complain);
   //final String initialValue;
   ///final void Function(String) onValueChange;
 
   @override
-  State createState() => new MyDialogState(tution);
+  State createState() => new MyDialogState(complain);
 }
 
 class MyDialogState extends State<MyDialog> {
   double rating;
-  Tution tution;
+  Complain comp;
   String complain;
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference databaseReference;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  MyDialogState(this.tution);
+  MyDialogState(this.comp);
   @override
   void initState() {
     super.initState();
     rating = 3.5;
-
+  
   }
 
   void _showDialog2(context) {
@@ -41,7 +42,7 @@ class MyDialogState extends State<MyDialog> {
         return AlertDialog(
           title: new Text("Thank You"),
           content: new Text(
-              "You have unbooked the tution from ${tution.tutorname}(${tution.tutoremail})."),
+              "Thank you so much for ${comp.tutorname}(${comp.tutoremail})."),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
@@ -57,43 +58,15 @@ class MyDialogState extends State<MyDialog> {
   }
 
   void unbooktution() {
-    int x = int.parse(tution.unbooknumber) + 1;
-    databaseReference = database.reference().child("tutions/${tution.tid}");
-    databaseReference
-        .update({'status': 'unbooked', 'unbooknumber': x.toString()});
+  
+    databaseReference = database.reference().child("complains/${comp.key}");
     int now = new DateTime.now().millisecondsSinceEpoch;
-    String n = '${tution.uname}(${tution.uemail}) has unbooked the tution';
-    Notice noti = Notice(n, now);
-    String ni =
-        'You have unbooked the tution from ${tution.tutorname}(${tution.tutoremail}).';
-    Notice not = Notice(ni, now);
-    databaseReference = database
-        .reference()
-        .child("users")
-        .child(tution.uid)
-        .child('notification');
-    databaseReference.push().set(not.toJson());
-    for (var val in tution.interested) {
-      databaseReference =
-          database.reference().child("users").child(val).child('notification');
-      databaseReference.push().set(noti.toJson());
-    }
-    tution.status = 'unbooked';
-    Complain com = Complain(complain, tution.tutorname, tution.tutoremail,
-        tution.tutorid, tution.uid, tution.tid,tution.uname,rating.toString(),now,tution.uemail);
-
-    databaseReference = database
-        .reference()
-        .child("tutions")
-        .child(tution.tid)
-        .child('complain');
-    databaseReference.push().set(com.toJson());
-    databaseReference = database.reference().child("complains");
-    databaseReference.push().set(com.toJson());
+    databaseReference
+        .update({'complain': complain,'rating':rating.toString(), 'time': now.toString()});
     databaseReference = database.reference().child("users");
     databaseReference
         .orderByChild("email")
-        .equalTo(tution.tutoremail)
+        .equalTo(comp.tutoremail)
         .once()
         .then((onValue) {
       for (var value in onValue.value.values) {
@@ -111,30 +84,35 @@ class MyDialogState extends State<MyDialog> {
             value["rating"],
             value["number"],
             value["subject"]);
-     
+       
+        // String x = value["number"];
+        // u.number = int.parse(x);
+        // // u.rating = value["rating"];
+        
         for (var key in onValue.value.keys) {
           u.uid = key;
 
-          Rating r = Rating(rating.toString(), tution.uid);
+          Rating r = Rating(rating.toString(), comp.uid);
           double x = (double.parse(u.rating) + rating + 5.0) /
               (int.parse(u.number) + 1);
           u.rating = x.toString();
           int y = int.parse(u.number) + 1;
           u.number = y.toString();
           databaseReference =
-              database.reference().child("users/${tution.tutorid}");
+              database.reference().child("users/${comp.tutorid}");
           databaseReference
               .update({'rating': x.toString(), 'number': y.toString()});
           databaseReference = database
               .reference()
               .child("users")
-              .child(tution.tutorid)
+              .child(comp.tutorid)
               .child('ratings');
           databaseReference.push().set(r.toJson());
+          
         }
       }
     }).catchError((onError) {
-
+   
       setState(() {
         //_error = "Incorrect Email or Password";
       });
@@ -151,20 +129,20 @@ class MyDialogState extends State<MyDialog> {
           child: Column(
             children: <Widget>[
               new Text(
-                  'Why you want to unbook the tution from ${tution.tutorname}(${tution.tutoremail})?'),
+                  'Say something about ${comp.tutorname}(${comp.tutoremail})'),
               new TextFormField(
-                  decoration: InputDecoration(labelText: "Complain"),
+                  decoration: InputDecoration(labelText: ""),
                   onSaved: (val) => complain = val,
                   validator: (String value) {
                     if (value == "") {
-                      return "You must write the reason of unbooking the tution";
+                      return "You must write something about ${comp.tutorname}(${comp.tutoremail})";
                     }
                   }),
-              new Text('Rate ${tution.tutorname}(${tution.tutoremail})'),
+              new Text('Rate ${comp.tutorname}(${comp.tutoremail})'),
               SmoothStarRating(
                 allowHalfRating: false,
                 onRatingChanged: (v) {
-                  
+             
                   setState(() {
                     rating = v;
                   });
@@ -190,8 +168,8 @@ class MyDialogState extends State<MyDialog> {
             if (formKey.currentState.validate()) {
               formKey.currentState.save();
               unbooktution();
-              Navigator.of(context).pop();
               _showDialog2(context);
+               Navigator.of(context).pop();
               formKey.currentState.reset();
             }
           },

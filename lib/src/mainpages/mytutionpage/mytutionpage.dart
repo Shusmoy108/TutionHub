@@ -29,7 +29,7 @@ class MyTutionPageState extends State<MyTutionPage> {
     setState(() {
       super.initState();
       databaseReference = database.reference().child("tutions");
-      print("hello1");
+
     });
   }
 
@@ -62,7 +62,7 @@ class MyTutionPageState extends State<MyTutionPage> {
           _tutions[i].tid = key;
           i++;
         }
-        print(_mytutions);
+     
       });
     });
   }
@@ -118,7 +118,7 @@ class MyTutionPageState extends State<MyTutionPage> {
         _mytutions = [];
       }
     });
-    print(_mytutions.length);
+
     return _mytutions;
   }
 

@@ -28,20 +28,15 @@ class NotificationDetails extends State<Notifications> {
         database.reference().child("users").child(u.uid).child('notification');
     await databaseReference.once().then((DataSnapshot snapshot) {
       for (var val in snapshot.value.values) {
-        print(val['time']);
-        print("hello");
+     
         Notice noti = Notice(val['noti'], val['time']);
-        print(noti.toString());
-        // noti.noti = val['noti'];
-        //noti.time = val['time'];
-        print(noti.time);
-        print("hello");
+    
+      
         notifications.add(noti);
       }
     });
     notifications.sort((a, b) => b.time.compareTo(a.time));
-    print(notifications.length);
-    print("hello");
+ 
     return notifications;
   }
 

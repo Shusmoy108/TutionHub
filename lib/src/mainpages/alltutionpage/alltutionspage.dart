@@ -1,3 +1,4 @@
+import 'package:TuitionHub/src/mainpages/homepage/mainpage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../../models/tution.dart';
@@ -58,7 +59,7 @@ class AllTutionPageState extends State<AllTutionPage> {
 
   Future<List<Tution>> _getTution() async {
     List<Tution> _tutions = List();
-
+List<Tution> tutions = List();
     await databaseReference.once().then((DataSnapshot snapshot) {
       if (snapshot.value.values != null) {
         for (var value in snapshot.value.values) {
@@ -96,17 +97,23 @@ class AllTutionPageState extends State<AllTutionPage> {
         _tutions = [];
       }
     });
+
     int i=0;
-    //similarity search
     for(int j=0;j<_tutions.length;j++){
-      if(u.area.contains(_tutions[j].area)){
-        Tution tx=_tutions[j];
-        _tutions[j]=_tutions[i];
-        _tutions[i]=tx;
+    if(_tutions[j].status!="booked" && _tutions[j].uid!=u.uid){
+      tutions.add(_tutions[i]);
+    }
+    }
+    //similarity search
+    for(int j=0;j<tutions.length;j++){
+      if(u.area.contains(tutions[j].area)){
+        Tution tx=tutions[j];
+        tutions[j]=tutions[i];
+        tutions[i]=tx;
         i++;
       }
     }
-    return _tutions;
+    return tutions;
   }
 
   void addTution() {
@@ -119,18 +126,18 @@ class AllTutionPageState extends State<AllTutionPage> {
      databaseReference = database.reference().child("users/${u.uid}");
     databaseReference
         .update({'etuition': 'Yes'});
-    print("done");
+
     u.etuition="Yes";
     }
     else{
        databaseReference = database.reference().child("users/${u.uid}");
     databaseReference
         .update({'etuition': 'No'});
-    print("done");
+  
     u.etuition="No";
     }
      var router = new MaterialPageRoute(
-                  builder: (BuildContext context) => new AllTutionPage(u));
+                  builder: (BuildContext context) => new MainPage(u.email));
               Navigator.of(context).pushReplacement(router);
   }
   Widget floatButton(){
