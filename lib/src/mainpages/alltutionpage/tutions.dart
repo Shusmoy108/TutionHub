@@ -150,13 +150,19 @@ class Tutions extends StatelessWidget {
         .equalTo(tution.uid)
         .once()
         .then((onValue) {
-         
+
           if (onValue.value != null) {
-   
+           // print(onValue.value);
         for (var value in onValue.value.values) {
-          Complain c= new Complain(value['complain'], value["tutorname"], value["tutoremail"], value["tutorid"], value["uid"], value["tutionid"], value["uname"], value["rating"], int.parse(value["time"]), value["uemail"]);
+          //print(value["time"].runtimeType);
+
+          //if(runtimeType(value['rating']))
+          Complain c= new Complain(value['complain'], value["tutorname"], value["tutoremail"], value["tutorid"], value["uid"], value["tutionid"], value["uname"], value["rating"], value["time"], value["uemail"]);
+         // print(c.complain);
           c.ratingtype=value["ratingtype"];
+
           review.add(c);
+          //print(review);
         }
            }
            else{
@@ -167,8 +173,8 @@ databaseReference1 = database.reference().child("users");
             .orderByKey()
             .equalTo(tution.uid)
             .once()
-            .then((onValue) {
-          for (var value in onValue.value.values) {
+            .then((onValue1) {
+          for (var value in onValue1.value.values) {
             User us = User(
                 value["username"],
                 value["gender"],
@@ -184,6 +190,7 @@ databaseReference1 = database.reference().child("users");
                 value["subject"]);
             us.uid = tution.uid;
            tutor=us;
+           //print(tutor.toString());
            var router = new MaterialPageRoute(
               builder: (BuildContext context) => new DetailsPage(tutor,review));
               Navigator.of(context).push(router);

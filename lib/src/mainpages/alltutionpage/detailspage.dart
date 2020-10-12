@@ -377,15 +377,16 @@ Widget build(BuildContext context) {
  Widget getTextWidgets()
   {
     List<Widget> list = new List<Widget>();
-   
+    //print(review.length);
     if(review.length==0){
         list.add(stylishText("No Reviews for the tutor at the moment", 15.0));
     }
     else{
     for(var i = 0; i < review.length; i++){
- 
-      if(review[i].ratingtype=="tutor")
-      {
+ //print(review[i].ratingtype);
+ String type= review[i].uname+'(As '+review[i].ratingtype+")";
+//      if(review[i].ratingtype=="tutor")
+//      {
         list.add( Card(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -394,13 +395,14 @@ Widget build(BuildContext context) {
                         Container(
                           padding: EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 7.0),
                           child: Text(
-                            review[i].uname,
+                            type,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 13.0,
                             ),
                           ),
                         ),
+
                         Container(
                           padding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 10.0),
                           child: Row(
@@ -432,7 +434,7 @@ Widget build(BuildContext context) {
                       ],
                     ),
                   ),);
-    }
+   // }
     }
     }
     return new Column(children: list);
