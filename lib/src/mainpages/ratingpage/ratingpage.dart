@@ -40,6 +40,7 @@ class RatingPageState extends State<RatingPage> {
     List<Complain> _complains = List();
       List<Complain> _mycomplains = List();
     await databaseReference.once().then((DataSnapshot snapshot) {
+      //print(snapshot.value.values);
       if (snapshot.value.values != null) {
         for (var value in snapshot.value.values) {
      
@@ -63,6 +64,8 @@ class RatingPageState extends State<RatingPage> {
             _mycomplains.add(_complains[x]);
           }
         }
+        print(_complains);
+        print(_mycomplains);
       } else {
         _mycomplains = [];
       }

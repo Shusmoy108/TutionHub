@@ -224,6 +224,10 @@ class MyTution extends StatelessWidget {
       color: Color.fromRGBO(234, 239, 241, 1.0),
       child: Column(
         children: <Widget>[
+         Align(
+           alignment: Alignment.topRight,
+           child:  unbookbutton(index, context),
+         ),
           Text(
             'Number Of Students : ${tutions[index].numberofstudent}',
             style: TextStyle(
@@ -270,7 +274,7 @@ class MyTution extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(bottom: 5),
           ),
-          unbookbutton(index, context),
+         // unbookbutton(index, context),
           Padding(
             padding: EdgeInsets.only(bottom: 5),
           ),
@@ -426,7 +430,7 @@ Widget recomendationbutton(index, context) {
         width: 70,
         height: 30,
         decoration: BoxDecoration(
-          color: Colors.blue,
+          color: Colors.redAccent,
           borderRadius: BorderRadius.circular(10.0),
           boxShadow: [
             //BoxShadow(color: Colors.grey, offset: Offset(1, 2)),
@@ -468,8 +472,14 @@ Widget recomendationbutton(index, context) {
       margin: EdgeInsets.all(10),
       child:Column(
         children: <Widget>[
+          Align(
+            alignment: Alignment.topRight,
+            child:   unbookbutton(index, context),
+          ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -478,9 +488,7 @@ Widget recomendationbutton(index, context) {
                   stylishText('Subject : ${tutions[index].subject}', 11.0),
                   stylishText('Detailed Address : ${tutions[index].address}', 11.0),
                       ],),
-              Padding(
-                padding: EdgeInsets.only(left: 50),
-                        ),
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
@@ -492,14 +500,14 @@ Widget recomendationbutton(index, context) {
           Padding(
             padding: EdgeInsets.only(bottom: 5)),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               seeintbutton(index, context),
-              Padding(
-                padding: EdgeInsets.only(left: 50),),
+
               recomendationbutton(index, context),
-                Padding(
-                padding: EdgeInsets.only(left: 50),),
-                unbookbutton(index, context)
+
+
+
               ],)         
               ],) 
     );

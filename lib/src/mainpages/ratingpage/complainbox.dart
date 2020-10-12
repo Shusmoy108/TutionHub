@@ -57,7 +57,7 @@ class MyDialogState extends State<MyDialog> {
     );
   }
 
-  void unbooktution() {
+  void saveRating() {
   
     databaseReference = database.reference().child("complains/${comp.key}");
     int now = new DateTime.now().millisecondsSinceEpoch;
@@ -167,7 +167,7 @@ class MyDialogState extends State<MyDialog> {
           onPressed: () {
             if (formKey.currentState.validate()) {
               formKey.currentState.save();
-              unbooktution();
+              saveRating();
               _showDialog2(context);
                Navigator.of(context).pop();
               formKey.currentState.reset();
